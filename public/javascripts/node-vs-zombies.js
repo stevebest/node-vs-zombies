@@ -86,6 +86,46 @@ var KeyboardInput = (function() {
 
 
 /**
+ *
+ */
+var SocketInput = (function() {
+
+  var keyState = {};
+
+  socket.on('keydown', function (player, keyCode) {
+    keyState[player][keyCode] = true;
+  });
+  socket.on('keyup', function (player, keyCode) {
+    keyState[player][keyCode] = false;
+  });
+
+  function SocketInput(player) {
+    this.player = player;
+    keyState[player] = [];
+    [37, 38, 39, 40].forEach(function(i) {
+      keyState[player][i] = false;
+    });
+  }
+
+  SocketInput.prototype.left = function() {
+    return keyState[this.player][37];
+  }
+  SocketInput.prototype.up = function() {
+    return keyState[this.player][38];
+  }
+  SocketInput.prototype.right = function() {
+    return keyState[this.player][39];
+  }
+  SocketInput.prototype.down = function() {
+    return keyState[this.player][40];
+  }
+
+  return SocketInput;
+
+})();
+
+
+/**
  * Keeps player's state.
  */
 var Player = (function() {
