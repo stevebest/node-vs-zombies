@@ -3,6 +3,41 @@
  Copyright, 2011, Stepan Stolyarov
 */
 
+var socket = io.connect();
+
+// socket.io specific code
+var socket = io.connect();
+
+socket.on('connect', function () {
+  $('#login').addClass('connected');
+});
+
+socket.on('reconnect', function () {
+});
+
+socket.on('reconnecting', function () {
+//  message('System', 'Attempting to re-connect to the server');
+});
+
+socket.on('error', function (e) {
+//  message('System', e ? e : 'A unknown error occurred');
+});
+
+// dom manipulation
+$(function () {
+  $('#set-nickname').submit(function (ev) {
+    socket.emit('nickname', $('#nick').val(), function (taken) {
+      if (taken) {
+        $('#nickname-err').css('visibility', 'visible');
+      } else {
+        $('#login').addClass('nickname-set');
+        var nvz = new NodeVsZombies($('#container'));
+        nvz.animate();
+      }
+    });
+    return false;
+  });
+});
 
 var KeyboardInput = (function() {
   
@@ -17,12 +52,15 @@ var KeyboardInput = (function() {
   }
 
   KeyboardInput.prototype.onKeyDown = function(e) {
+    if (this.keyState[e.keyCode]) return;
+
     this.keyState[e.keyCode] = true;
-    console.log(e.keyCode);
+    socket.emit('keydown', e.keyCode);
   }
 
   KeyboardInput.prototype.onKeyUp = function(e) {
     this.keyState[e.keyCode] = false;
+    socket.emit('keyup', e.keyCode);
   }
 
   KeyboardInput.prototype.left = function() {
@@ -48,7 +86,7 @@ var Player = (function() {
   // Speed of turning in radians per millisecond
   var TURN_SPEED = Math.PI / 1000.0;
 
-  var SPEED = 2.0 / 1000.0;
+  var SPEED = 3.0 / 1000.0;
 
   function Player() {
     this.position = { x: 0.0, y: 0.0, z: 0.0 };
@@ -60,8 +98,11 @@ var Player = (function() {
   }
 
   Player.prototype.walk = function(dt) {
-    this.position.x += SPEED * Math.cos(this.heading) * dt;
-    this.position.y += SPEED * Math.sin(this.heading) * dt;
+    var x = this.position.x + SPEED * Math.cos(this.heading) * dt,
+        y = this.position.y + SPEED * Math.sin(this.heading) * dt;
+
+    this.position.x = Math.min(10, Math.max(-10, x));
+    this.position.y = Math.min(10, Math.max(-10, y));
   }
 
   Player.prototype.idle = function(dt) {
@@ -69,6 +110,37 @@ var Player = (function() {
   }
 
   return Player;
+
+})();
+
+
+var PlayerObject = (function() {
+
+  var PLAYER_GEOMETRY = new THREE.CubeGeometry(0.4, 0.8, 1.7, 1, 1, 1);
+
+  function PlayerObject(scene, player) {
+    this.scene = scene;
+    this.player = player;
+
+    this.obj = new THREE.Mesh(
+      PLAYER_GEOMETRY,
+      new THREE.MeshLambertMaterial()
+    );
+    this.scene.addChild(this.obj);
+  }
+
+  PlayerObject.prototype.update = function () {
+    this.obj.position.x = this.player.position.x;
+    this.obj.position.y = this.player.position.y;
+
+    this.obj.rotation.z = this.player.heading;
+  }
+
+  PlayerObject.prototype.remove = function () {
+    this.scene.removeChild(this.obj);
+  }
+
+  return PlayerObject;
 
 })();
 
@@ -87,34 +159,28 @@ NodeVsZombies = (function() {
   function NodeVsZombies(container) {
     this.t = Date.now();
 
-    this.container = container;
+    this.players = {};
 
+    this.hero = new Player();
     this.keyboard = new KeyboardInput();
-
-    this.player = new Player();
 
     this.scene = new THREE.Scene();
     this.renderer = new THREE.WebGLRenderer();
     this.renderer.setSize(WIDTH, HEIGHT);
-    this.container.append(this.renderer.domElement);
     this.camera = new THREE.Camera(VIEW_ANGLE, ASPECT, NEAR, FAR);
+    container.append(this.renderer.domElement);
 
-    this.camera.position = { x: 0.0, y: 5.0, z: 5.0 };
+    this.camera.position = { x: 0.0, y: -20.0, z: 10.0 };
     this.camera.up = { x: 0.0, y: 0.0, z: 1.0 };
 
-    var obj = new THREE.Mesh(
-      new THREE.CubeGeometry(0.4, 0.8, 1.7, 1, 1, 1),
-      new THREE.MeshLambertMaterial()
-    );
-    this.scene.addChild(obj);
-    this.obj = obj;
-
-    var ambient = new THREE.AmbientLight(0x333366);
+    var ambient = new THREE.AmbientLight(0x333355);
     this.scene.addLight(ambient);
 
-    var zlight = new THREE.PointLight(0xaaaaaa);
+    var zlight = new THREE.PointLight(0xcccccc);
     zlight.position.z = 100.0;
     this.scene.addLight(zlight);
+
+    this.heroObject = new PlayerObject(this.scene, this.hero);
   }
 
   NodeVsZombies.prototype.animate = function() {
@@ -129,23 +195,20 @@ NodeVsZombies = (function() {
     var t = (this.t += dt);
 
     if (this.keyboard.left()) {
-      this.player.turn(dt);
+      this.hero.turn(dt);
     }
     if (this.keyboard.right()) {
-      this.player.turn(-dt);
+      this.hero.turn(-dt);
     }
     if (this.keyboard.up()) {
-      this.player.walk(dt);
+      this.hero.walk(dt);
     } else if (this.keyboard.down()) {
-      this.player.walk(-dt / 2);
+      this.hero.walk(-dt / 2);
     } else {
-      this.player.idle(dt);
+      this.hero.idle(dt);
     }
 
-    this.obj.position.x = this.player.position.x;
-    this.obj.position.y = this.player.position.y;
-
-    this.obj.rotation.z = this.player.heading;
+    this.heroObject.update();
   };
 
   return NodeVsZombies;

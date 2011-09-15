@@ -18,3 +18,15 @@ canvas {
     height: 475px;
     margin: auto;
 }
+
+#nickname-err {
+    color: red;
+    visibility: hidden;
+}
+
+.connected #connecting {
+    display: none;
+}
+.nickname-set #nickname {
+    display: none;
+}

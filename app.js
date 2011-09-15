@@ -1,5 +1,5 @@
 var express = require('express'),
-    io = require('socket.io');
+    sio = require('socket.io');
 
 var app = module.exports = express.createServer();
 
@@ -26,9 +26,44 @@ app.configure('production', function() {
 
 // Routes
 
-app.get('/', function(req, res) {
+app.get('/', function (req, res) {
   res.render('index');
 });
 
 app.listen(3000);
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
+
+// Socket.IO server
+
+var io = sio.listen(app), nicknames = {};
+
+io.sockets.on('connection', function (socket) {
+
+  socket.on('keydown', function (keyCode) {
+    socket.broadcast.emit('keydown', socket.nickname, keyCode);
+  });
+
+  socket.on('keyup', function (keyCode) {
+    socket.broadcast.emit('keyup', socket.nickname, keyCode);
+  });
+
+  socket.on('nickname', function (nick, fn) {
+    if (nicknames[nick]) {
+      fn(true);
+    } else {
+      fn(false);
+      nicknames[nick] = socket.nickname = nick;
+      socket.broadcast.emit('announcement', nick + ' connected');
+      io.sockets.emit('nicknames', nicknames);
+    }
+  });
+
+  socket.on('disconnect', function () {
+    if (!socket.nickname) return;
+
+    delete nicknames[socket.nickname];
+    socket.broadcast.emit('announcement', socket.nickname + ' disconnected');
+    socket.broadcast.emit('nicknames', nicknames);
+  });
+
+});

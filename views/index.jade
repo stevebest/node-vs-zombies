@@ -1,8 +1,15 @@
-div#container
+#login
+  #nickname
+    form.wrap#set-nickname
+      p Please type in your nickname and press enter.
+      input#nick
+      p#nickname-err Nickname already in use
+    #connecting
+      .wrap Connecting to socket.io server
 
+#container
+
+script(type="text/javascript", src="/socket.io/socket.io.js")
 script(type="text/javascript", src="javascripts/Three.js")
 script(type="text/javascript", src="javascripts/RequestAnimationFrame.js")
 script(type="text/javascript", src="javascripts/node-vs-zombies.js")
-script(type="text/javascript")
-  var nvz = new NodeVsZombies($('#container'));
-  nvz.animate();
