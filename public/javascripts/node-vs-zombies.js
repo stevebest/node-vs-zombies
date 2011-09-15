@@ -98,6 +98,14 @@ var SocketInput = (function() {
   socket.on('keyup', function (player, keyCode) {
     keyState[player][keyCode] = false;
   });
+  socket.on('nicknames', function (players) {
+    for (player in players) {
+      keyState[player] |= [];
+    }
+  });
+  socket.on('leave', function (player) {
+    delete keyState[player];
+  });
 
   function SocketInput(player) {
     this.player = player;
