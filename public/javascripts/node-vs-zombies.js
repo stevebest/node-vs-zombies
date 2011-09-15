@@ -31,7 +31,7 @@ $(function () {
         $('#nickname-err').css('visibility', 'visible');
       } else {
         $('#login').addClass('nickname-set');
-        var nvz = new NodeVsZombies($('#container'));
+        var nvz = new NodeVsZombiesUI($('#container'));
         nvz.animate();
       }
     });
@@ -39,6 +39,10 @@ $(function () {
   });
 });
 
+
+/**
+ * Reacts to keyboard events, saves them, and sends them to server.
+ */
 var KeyboardInput = (function() {
   
   function KeyboardInput() {
@@ -81,6 +85,9 @@ var KeyboardInput = (function() {
 })();
 
 
+/**
+ * Keeps player's state.
+ */
 var Player = (function() {
 
   // Speed of turning in radians per millisecond
@@ -114,6 +121,9 @@ var Player = (function() {
 })();
 
 
+/**
+ * Represents player on a 3D scene
+ */
 var PlayerObject = (function() {
 
   var PLAYER_GEOMETRY = new THREE.CubeGeometry(0.4, 0.8, 1.7, 1, 1, 1);
@@ -145,8 +155,10 @@ var PlayerObject = (function() {
 })();
 
 
-var NodeVsZombies;
-NodeVsZombies = (function() {
+/**
+ * Creates and animates the 3D scene.
+ */
+var NodeVsZombiesUI = (function() {
 
   var ASPECT, FAR, HEIGHT, NEAR, VIEW_ANGLE, WIDTH;
   WIDTH = 720;
@@ -156,7 +168,7 @@ NodeVsZombies = (function() {
   NEAR = 0.1;
   FAR = 100;
 
-  function NodeVsZombies(container) {
+  function NodeVsZombiesUI(container) {
     this.t = Date.now();
 
     this.players = {};
@@ -183,14 +195,14 @@ NodeVsZombies = (function() {
     this.heroObject = new PlayerObject(this.scene, this.hero);
   }
 
-  NodeVsZombies.prototype.animate = function() {
+  NodeVsZombiesUI.prototype.animate = function() {
     requestAnimationFrame(this.animate.bind(this));
     this.simulate();
     this.renderer.clear();
     return this.renderer.render(this.scene, this.camera);
   };
 
-  NodeVsZombies.prototype.simulate = function() {
+  NodeVsZombiesUI.prototype.simulate = function() {
     var dt = Math.min(Date.now() - this.t, 1000);
     var t = (this.t += dt);
 
@@ -211,6 +223,6 @@ NodeVsZombies = (function() {
     this.heroObject.update();
   };
 
-  return NodeVsZombies;
+  return NodeVsZombiesUI;
 
 })();
