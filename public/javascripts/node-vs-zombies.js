@@ -100,6 +100,26 @@ var Player = (function() {
     this.heading = Math.PI / 2;
   }
 
+  Player.prototype.setInput = function(input) {
+    this.input = input;
+  }
+
+  Player.prototype.update = function(dt) {
+    if (this.input.left()) {
+      this.turn(dt);
+    }
+    if (this.input.right()) {
+      this.turn(-dt);
+    }
+    if (this.input.up()) {
+      this.walk(dt);
+    } else if (this.input.down()) {
+      this.walk(-dt / 2);
+    } else {
+      this.idle(dt);
+    }
+  }
+
   Player.prototype.turn = function(dt) {
     this.heading += TURN_SPEED * dt;
   }
@@ -171,11 +191,6 @@ var NodeVsZombiesUI = (function() {
   function NodeVsZombiesUI(container) {
     this.t = Date.now();
 
-    this.players = {};
-
-    this.hero = new Player();
-    this.keyboard = new KeyboardInput();
-
     this.scene = new THREE.Scene();
     this.renderer = new THREE.WebGLRenderer();
     this.renderer.setSize(WIDTH, HEIGHT);
@@ -192,7 +207,12 @@ var NodeVsZombiesUI = (function() {
     zlight.position.z = 100.0;
     this.scene.addLight(zlight);
 
+    this.players = {};
+
+    this.hero = new Player();
     this.heroObject = new PlayerObject(this.scene, this.hero);
+
+    this.hero.setInput(new KeyboardInput());
   }
 
   NodeVsZombiesUI.prototype.animate = function() {
@@ -206,20 +226,7 @@ var NodeVsZombiesUI = (function() {
     var dt = Math.min(Date.now() - this.t, 1000);
     var t = (this.t += dt);
 
-    if (this.keyboard.left()) {
-      this.hero.turn(dt);
-    }
-    if (this.keyboard.right()) {
-      this.hero.turn(-dt);
-    }
-    if (this.keyboard.up()) {
-      this.hero.walk(dt);
-    } else if (this.keyboard.down()) {
-      this.hero.walk(-dt / 2);
-    } else {
-      this.hero.idle(dt);
-    }
-
+    this.hero.update(dt);
     this.heroObject.update();
   };
 
