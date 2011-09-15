@@ -31,7 +31,7 @@ $(function () {
         $('#nickname-err').css('visibility', 'visible');
       } else {
         $('#login').addClass('nickname-set');
-        var nvz = new NodeVsZombiesUI($('#container'));
+        var nvz = new NodeVsZombiesUI($('#container'), $('#nick').val());
         nvz.animate();
       }
     });
@@ -152,6 +152,14 @@ var Player = (function() {
     this.input = input;
   }
 
+  Player.prototype.setObject = function(object) {
+    this.object = object;
+  }
+
+  Player.prototype.remove = function() {
+    this.object.remove();
+  }
+
   Player.prototype.update = function(dt) {
     if (this.input.left()) {
       this.turn(dt);
@@ -166,6 +174,8 @@ var Player = (function() {
     } else {
       this.idle(dt);
     }
+
+    this.object.update();
   }
 
   Player.prototype.turn = function(dt) {
@@ -236,7 +246,7 @@ var NodeVsZombiesUI = (function() {
   NEAR = 0.1;
   FAR = 100;
 
-  function NodeVsZombiesUI(container) {
+  function NodeVsZombiesUI(container, heroName) {
     this.t = Date.now();
 
     this.scene = new THREE.Scene();
@@ -255,12 +265,32 @@ var NodeVsZombiesUI = (function() {
     zlight.position.z = 100.0;
     this.scene.addLight(zlight);
 
+    //
     this.players = {};
 
     this.hero = new Player();
-    this.heroObject = new PlayerObject(this.scene, this.hero);
-
     this.hero.setInput(new KeyboardInput());
+    this.hero.setObject(new PlayerObject(this.scene, this.hero));
+
+    this.players[heroName] = this.hero;
+
+    socket.on('nicknames', function (players) {
+      for (name in players) {
+        if (!this.players[name]) {
+          var player = new Player();
+          player.setInput(new SocketInput(name));
+          player.setObject(new PlayerObject(this.scene, player));
+          this.players[name] = player;
+        }
+      }
+    }.bind(this));
+
+    socket.on('leave', function (name) {
+      if (this.players[name]) {
+        this.players[name].remove();
+        delete this.players[name];
+      }
+    }.bind(this));
   }
 
   NodeVsZombiesUI.prototype.animate = function() {
@@ -274,8 +304,9 @@ var NodeVsZombiesUI = (function() {
     var dt = Math.min(Date.now() - this.t, 1000);
     var t = (this.t += dt);
 
-    this.hero.update(dt);
-    this.heroObject.update();
+    for (name in this.players) {
+      this.players[name].update(dt);
+    }
   };
 
   return NodeVsZombiesUI;
