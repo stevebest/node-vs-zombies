@@ -53,7 +53,6 @@ io.sockets.on('connection', function (socket) {
     } else {
       fn(false);
       nicknames[nick] = socket.nickname = nick;
-      socket.broadcast.emit('announcement', nick + ' connected');
       io.sockets.emit('nicknames', nicknames);
     }
   });
