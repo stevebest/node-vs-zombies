@@ -1,5 +1,8 @@
 var express = require('express'),
-    sio = require('socket.io');
+    sio = require('socket.io'),
+    browserify = require('browserify');
+
+var nvz = require(__dirname + '/nvz');
 
 var app = module.exports = express.createServer();
 
@@ -14,6 +17,7 @@ app.configure(function() {
   app.use(express.session({ secret: 'yo mama is fat' }));
   app.use(app.router);
   app.use(express.static(__dirname + '/public'));
+  app.use(browserify(__dirname + '/nvz/client'));
 });
 
 app.configure('development', function() {
@@ -35,6 +39,8 @@ console.log("Express server listening on port %d in %s mode",
             app.address().port, app.settings.env);
 
 // Socket.IO server
+
+var world = new nvz.World();
 
 var io = sio.listen(app), nicknames = {};
 
