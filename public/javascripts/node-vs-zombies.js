@@ -99,7 +99,7 @@ var SocketInput = (function() {
     keyState[player][keyCode] = false;
   });
   socket.on('nicknames', function (players) {
-    for (player in players) {
+    for (var player in players) {
       keyState[player] |= [];
     }
   });
@@ -275,7 +275,7 @@ var NodeVsZombiesUI = (function() {
     this.players[heroName] = this.hero;
 
     socket.on('nicknames', function (players) {
-      for (name in players) {
+      for (var name in players) {
         if (!this.players[name]) {
           var player = new Player();
           player.setInput(new SocketInput(name));
@@ -301,10 +301,11 @@ var NodeVsZombiesUI = (function() {
   };
 
   NodeVsZombiesUI.prototype.simulate = function() {
-    var dt = Math.min(Date.now() - this.t, 1000);
-    var t = (this.t += dt);
+    var t = Date.now(),
+        dt = Math.min(t - this.t, 1000);
+    this.t = t;
 
-    for (name in this.players) {
+    for (var name in this.players) {
       this.players[name].update(dt);
     }
   };
