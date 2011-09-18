@@ -13,10 +13,10 @@ module.exports = class SocketInput extends Input
     Input::ALL.forEach (keyCode) =>
       @keyState.put keyCode, false
 
-    socket.on Message::KEYDOWN, (player, keyCode) =>
+    socket.on Message::KEYDOWN, (keyCode) =>
       @keyState.put keyCode, true
 
-    socket.on Message::KEYUP, (player, keyCode) =>
+    socket.on Message::KEYUP, (keyCode) =>
       @keyState.put keyCode, false
 
   left:  -> @keyState.get(Input::LEFT)

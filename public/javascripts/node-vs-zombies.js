@@ -3,10 +3,8 @@
  Copyright, 2011, Stepan Stolyarov
 */
 
-var nvz = require('/client');
-
 // socket.io specific code
-var socket = io.connect();
+var socket = window.socket = io.connect();
 
 socket.on('connect', function () {
   $('#login').addClass('connected');
@@ -23,6 +21,8 @@ socket.on('error', function (e) {
 //  message('System', e ? e : 'A unknown error occurred');
 });
 
+var nvz = require('/client');
+
 // dom manipulation
 $(function () {
   $('#set-nickname').submit(function (ev) {
@@ -31,7 +31,7 @@ $(function () {
         $('#nickname-err').css('visibility', 'visible');
       } else {
         $('#login').addClass('nickname-set');
-        var world = new nvz.WorldGL($('#container'), $('#nick').val());
+        var world = new nvz.WorldGL($('#container'), socket, $('#nick').val());
         world.animate();
       }
     });

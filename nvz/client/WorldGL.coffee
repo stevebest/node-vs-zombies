@@ -1,8 +1,12 @@
 
+
 World = require '../shared/World'
-Player = require '../shared/Player'
+
 PlayerGL = require './PlayerGL'
 KeyboardInput = require './KeyboardInput'
+SocketInput = require './SocketInput'
+Message = require '../shared/Message'
+Hashtable = require '../shared/Hashtable'
 
 module.exports = class WorldGL extends World
 
@@ -13,7 +17,7 @@ module.exports = class WorldGL extends World
   NEAR = 0.1
   FAR = 100
 
-  constructor: (container, heroName) ->
+  constructor: (container, socket, heroName) ->
     super()
 
     @t = Date.now()
@@ -40,17 +44,18 @@ module.exports = class WorldGL extends World
     @hero.setInput new KeyboardInput
     @addPlayer heroName, @hero
 
-    socket.on 'nicknames', (players) =>
-      for name in players
-        do (name) ->
-          if undefined == @players.get name
-            player = new Player this
-            player.setInput new SocketInput name
-            @addPlayer name, player
+    socket.on Message::PLAYERS, (players) =>
+      (new Hashtable players).forEach (name, state) =>
+        player = @getPlayer name
+        if undefined == player
+          player = new PlayerGL this
+          player.setInput new SocketInput name
+          @addPlayer name, player
+        player.setState state
 
       return null # do not collect the comprehension result
 
-    socket.on 'leave', (name) =>
+    socket.on Message::LEAVE, (name) =>
       @removePlayer name
   
   animate: ->

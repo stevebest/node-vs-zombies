@@ -1,5 +1,6 @@
 var express = require('express'),
-    browserify = require('browserify');
+    browserify = require('browserify'),
+    sio = require('socket.io');
 
 var app = module.exports = express.createServer();
 
@@ -33,8 +34,10 @@ app.configure('production', function() {
   app.use(express.errorHandler());
 });
 
-// Routes
 
+//
+// Routes
+//
 app.get('/', function (req, res) {
   res.render('index');
 });
@@ -43,11 +46,32 @@ app.listen(3000);
 console.log("Express server listening on port %d in %s mode",
             app.address().port, app.settings.env);
 
+//
+// Socket.IO server
+//
+var io = sio.listen(app);
+
+io.enable('browser client minification');    // send minified client
+io.set('log level', 2);                      // reduce logging
+
+io.configure('production', function() {
+  io.enable('browser client minification');  // send minified client
+  io.enable('browser client etag');          // apply etag caching logic based on version number
+  io.set('log level', 1);                    // reduce logging
+  io.set('transports', [                     // enable all transports (optional if you want flashsocket)
+      'websocket'
+    , 'flashsocket'
+    , 'htmlfile'
+    , 'xhr-polling'
+    , 'jsonp-polling'
+  ]);  
+});
+
+//
 // World simulation
+//
+var nvz = require(__dirname + '/nvz/server');
 
-var nvz = require(__dirname + '/nvz/server'),
-    sio = require('socket.io');
-
-var world = new nvz.WorldServer(sio.listen(app));
+var world = new nvz.WorldServer(io);
 
 world.animate();

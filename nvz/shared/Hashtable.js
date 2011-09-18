@@ -1,8 +1,12 @@
 var __slice = Array.prototype.slice;
 
-var Hashtable = function() {
+var Hashtable = function(object) {
 
   var table = {};
+
+  if ("undefined" !== typeof object) {
+    table = object; // clone?
+  }
 
   this.put = function(key, value) {
     table[key] = value;

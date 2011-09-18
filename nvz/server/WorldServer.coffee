@@ -24,7 +24,7 @@ class SocketHandler
 
     # Broadcast a keyup to everyone
     socket.on Message::KEYUP, (keyCode) ->
-      socket.broadcast.emit Message::KEYDOWN, socket.nickname, keyCode
+      socket.broadcast.emit Message::KEYUP, socket.nickname, keyCode
 
     socket.on Message::JOIN, (nick, callback) ->
       callback world.joinPlayer(nick, socket)
