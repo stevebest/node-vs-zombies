@@ -32,3 +32,4 @@ module.exports = class Actor
 
   remove: ->
     @world.remove this
+    this

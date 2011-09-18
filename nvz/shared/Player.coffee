@@ -10,10 +10,6 @@ module.exports = class Player extends Actor
 
     @health = 5
 
-  remove: ->
-    super()
-    this
-
   setInput: (input) ->
     @input = input
     this
