@@ -15,7 +15,8 @@ module.exports = class SocketInput extends Input
 
   window.socket.on Message::PLAYERS, (players) ->
     (new Hashtable players).forEach (player, state) ->
-      keyState.put player, new Hashtable
+      if !keyState.get player
+        keyState.put player, new Hashtable
 
   window.socket.on Message::LEAVE, (player) ->
     keyState.delete player
