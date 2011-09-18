@@ -8,3 +8,10 @@ module.exports = class Input
   DOWN:  40
 
   ALL: [Input::LEFT, Input::UP, Input::RIGHT, Input::DOWN]
+
+  left:  -> false
+  right: -> false
+  up:    -> false
+  down:  -> false
+
+  fire:  -> false

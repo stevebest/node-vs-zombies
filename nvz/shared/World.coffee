@@ -7,6 +7,9 @@ module.exports = class World
   addPlayer: (name, player) ->
     @players.put name, player
 
+  getPlayer: (name) ->
+    @players.get name
+
   removePlayer: (name) ->
     @players.delete name
 

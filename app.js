@@ -1,8 +1,5 @@
 var express = require('express'),
-    sio = require('socket.io'),
     browserify = require('browserify');
-
-var nvz = require(__dirname + '/nvz');
 
 var app = module.exports = express.createServer();
 
@@ -17,14 +14,22 @@ app.configure(function() {
   app.use(express.session({ secret: 'yo mama is fat' }));
   app.use(app.router);
   app.use(express.static(__dirname + '/public'));
-  app.use(browserify(__dirname + '/nvz/client'));
 });
 
 app.configure('development', function() {
+  app.use(browserify({
+    require: __dirname + '/nvz/client',
+    watch: true
+  }));
   app.use(express.errorHandler({ dumpExceptions: true, showStack: true })); 
 });
 
 app.configure('production', function() {
+  app.use(browserify({
+    require: __dirname + '/nvz/client',
+    watch: false,
+    // filter: require('uglify-js')
+  }));
   app.use(express.errorHandler());
 });
 
@@ -38,38 +43,11 @@ app.listen(3000);
 console.log("Express server listening on port %d in %s mode",
             app.address().port, app.settings.env);
 
-// Socket.IO server
+// World simulation
 
-var world = new nvz.World();
+var nvz = require(__dirname + '/nvz/server'),
+    sio = require('socket.io');
 
-var io = sio.listen(app), nicknames = {};
+var world = new nvz.WorldServer(sio.listen(app));
 
-io.sockets.on('connection', function (socket) {
-
-  socket.on('keydown', function (keyCode) {
-    socket.broadcast.emit('keydown', socket.nickname, keyCode);
-  });
-
-  socket.on('keyup', function (keyCode) {
-    socket.broadcast.emit('keyup', socket.nickname, keyCode);
-  });
-
-  socket.on('nickname', function (nick, fn) {
-    if (nicknames[nick]) {
-      fn(true);
-    } else {
-      fn(false);
-      nicknames[nick] = socket.nickname = nick;
-      io.sockets.emit('nicknames', nicknames);
-    }
-  });
-
-  socket.on('disconnect', function () {
-    if (!socket.nickname) return;
-
-    delete nicknames[socket.nickname];
-    socket.broadcast.emit('leave', socket.nickname);
-    socket.broadcast.emit('nicknames', nicknames);
-  });
-
-});
+world.animate();

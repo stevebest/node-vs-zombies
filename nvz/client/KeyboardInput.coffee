@@ -1,4 +1,5 @@
 Input = require '../shared/Input'
+Message = require '../shared/Message'
 
 module.exports = class KeyboardInput extends Input
 
@@ -11,13 +12,13 @@ module.exports = class KeyboardInput extends Input
 
   onKeyDown: (e) ->
     if -1 != Input::ALL.indexOf e.keyCode
-      socket.emit 'keydown', e.keyCode unless @keyState[e.keyCode]
+      socket.emit Message::KEYDOWN, e.keyCode unless @keyState[e.keyCode]
       @keyState[e.keyCode] = true
       
 
   onKeyUp: (e) ->
     if -1 != Input::ALL.indexOf e.keyCode
-      socket.emit 'keyup', e.keyCode if @keyState[e.keyCode]
+      socket.emit Message::KEYUP, e.keyCode if @keyState[e.keyCode]
       @keyState[e.keyCode] = false
 
   left:  -> @keyState[Input::LEFT]
