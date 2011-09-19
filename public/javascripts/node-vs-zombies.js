@@ -23,6 +23,8 @@ socket.on('error', function (e) {
 
 var nvz = require('/client');
 
+var world;
+
 // dom manipulation
 $(function () {
   $('#set-nickname').submit(function (ev) {
@@ -31,7 +33,7 @@ $(function () {
         $('#nickname-err').css('visibility', 'visible');
       } else {
         $('#login').addClass('nickname-set');
-        var world = new nvz.WorldGL($('#container'), socket, $('#nick').val());
+        world = new nvz.WorldGL($('#container'), socket, $('#nick').val());
         world.animate();
       }
     });
