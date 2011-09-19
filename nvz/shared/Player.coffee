@@ -10,8 +10,7 @@ module.exports = class Player extends Actor
 
     @health = 5
 
-  setInput: (input) ->
-    @input = input
+  setInput: (@input) ->
     this
   
   update: (dt) ->
