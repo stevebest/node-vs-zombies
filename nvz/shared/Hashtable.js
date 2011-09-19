@@ -17,7 +17,7 @@ var Hashtable = function(object) {
   };
 
   this.forEach = function(fn) {
-    for (key in table) {
+    for (var key in table) {
       fn(key, table[key]);
     }
   };
