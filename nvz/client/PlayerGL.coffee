@@ -22,7 +22,3 @@ module.exports = class PlayerGL extends Player
     @object.rotation.z = @heading
 
     this
-
-  remove: ->
-    super()
-    @scene.removeChild @object

@@ -36,7 +36,3 @@ module.exports = class Actor
 
   die: ->
     this
-
-  remove: ->
-    @world.remove this
-    this

@@ -58,6 +58,10 @@ module.exports = class WorldGL extends World
     socket.on Message::LEAVE, (name) =>
       @removePlayer name
   
+  removePlayer: (name) ->
+    player = super()
+    @scene.removeChild player.object if player
+
   animate: ->
     requestAnimationFrame @animate.bind(this)
     @simulate()
