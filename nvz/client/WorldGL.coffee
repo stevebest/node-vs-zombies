@@ -25,7 +25,7 @@ module.exports = class WorldGL extends World
     @scene = new THREE.Scene
 
     @renderer = new THREE.WebGLRenderer antialias: true
-    @renderer.setSize WIDTH, HEIGHT;
+    @renderer.setSize container.width(), container.height()
     container.append @renderer.domElement
 
     @camera = new THREE.Camera(VIEW_ANGLE, ASPECT, NEAR, FAR)
