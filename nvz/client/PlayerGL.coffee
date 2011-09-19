@@ -2,15 +2,18 @@ Player = require '../shared/Player'
 
 module.exports = class PlayerGL extends Player
 
-  PLAYER_GEOMETRY = new THREE.CubeGeometry(0.4, 0.8, 1.7, 1, 1, 1)
+  GEOMETRY = new THREE.CubeGeometry(0.4, 0.8, 1.7 * 2, 1, 1, 1)
+  MATERIAL = new THREE.MeshLambertMaterial
 
   constructor: (world) ->
     super world
 
     @scene = world.scene
 
-    material = new THREE.MeshLambertMaterial
-    @object = new THREE.Mesh PLAYER_GEOMETRY, material
+    @object = new THREE.Mesh GEOMETRY, MATERIAL
+
+    @object.position.z = 0
+
     @scene.addChild @object
 
   remove: ->
@@ -26,3 +29,8 @@ module.exports = class PlayerGL extends Player
     @object.rotation.z = @heading
 
     this
+
+  loader = new THREE.JSONLoader false
+  loader.load model: '/images/Dude.js', callback: (geometry) ->
+    GEOMETRY = geometry
+    MATERIAL = geometry.materials[0]
