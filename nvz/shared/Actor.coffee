@@ -18,8 +18,8 @@ module.exports = class Actor
     this
 
   walk: (dt) ->
-    @position.x += Math.cos(@heading) * @speed * dt
-    @position.y += Math.sin(@heading) * @speed * dt
+    @position.x += Math.sin(@heading) * @speed * dt
+    @position.y -= Math.cos(@heading) * @speed * dt
     this
 
   turn: (dt) ->
