@@ -10,10 +10,7 @@ Hashtable = require '../shared/Hashtable'
 
 module.exports = class WorldGL extends World
 
-  WIDTH = 720
-  HEIGHT = 475
   VIEW_ANGLE = 45
-  ASPECT = WIDTH / HEIGHT
   NEAR = 0.1
   FAR = 100
 
@@ -28,21 +25,31 @@ module.exports = class WorldGL extends World
     @renderer.setSize container.width(), container.height()
     container.append @renderer.domElement
 
-    @camera = new THREE.Camera(VIEW_ANGLE, ASPECT, NEAR, FAR)
-    @camera.position = { x: 0.0, y: -20.0, z: 10.0 }
+    @camera = new THREE.Camera(VIEW_ANGLE,
+      container.width() / container.height(), NEAR, FAR)
+    @camera.position = x: 0.0, y: -7.0, z: 4.5
     # Z axis is up. Default Y up is STUPID!
-    @camera.up = { x: 0.0, y: 0.0, z: 1.0 }
+    @camera.up = x: 0.0, y: 0.0, z: 1.0
+    @camera.target.position = x: 0.0, y: 0.0, z: 2.0
 
-    ambient = new THREE.AmbientLight(0x333355)
+    groundMaterial = new THREE.MeshLambertMaterial color: 0xffdd99
+    THREE.ColorUtils.adjustHSV groundMaterial.color, 0, 0, 0.1
+    ground = new THREE.Mesh(
+      new THREE.PlaneGeometry 100.0, 100.0, 100, 100
+      groundMaterial
+    )
+    @scene.addChild ground
+
+    ambient = new THREE.AmbientLight 0x222233
     @scene.addLight ambient
-
-    zlight = new THREE.PointLight(0xcccccc)
-    zlight.position.z = 100.0
-    @scene.addLight zlight
 
     @hero = new PlayerGL this
     @hero.setInput new KeyboardInput
     @addPlayer heroName, @hero
+
+    zlight = new THREE.PointLight 0xffffff, 0.5, 10.0
+    zlight.position.z = 2.5
+    @scene.addLight zlight
 
     socket.on Message::PLAYERS, (players) =>
       (new Hashtable players).forEach (name, state) =>
