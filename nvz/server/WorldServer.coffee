@@ -62,7 +62,7 @@ module.exports = class WorldServer extends World
     player.setInput new SocketInput(socket)
     socket.nickname = nick
     @addPlayer nick, player
-    @updateAllPlayers
+    @updateAllPlayers()
 
   updateAllPlayers: ->
     @io.sockets.emit Message::PLAYERS, @players.invoke('getState')
