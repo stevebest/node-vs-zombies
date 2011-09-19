@@ -56,6 +56,7 @@ module.exports = class WorldGL extends World
       return null # do not collect the comprehension result
 
     socket.on Message::LEAVE, (name) =>
+      console.log "Removing player #{name}"
       @removePlayer name
 
     # Update SocketInput, too
@@ -65,7 +66,7 @@ module.exports = class WorldGL extends World
     socket.on Message::LEAVE, SocketInput.leave
 
   removePlayer: (name) ->
-    player = super()
+    player = super(name)
     @scene.removeChild player.object if player
 
   animate: ->
