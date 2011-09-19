@@ -57,7 +57,13 @@ module.exports = class WorldGL extends World
 
     socket.on Message::LEAVE, (name) =>
       @removePlayer name
-  
+
+    # Update SocketInput, too
+    socket.on Message::PLAYERS, SocketInput.update
+    socket.on Message::KEYDOWN, SocketInput.keyDown
+    socket.on Message::KEYUP, SocketInput.keyUp
+    socket.on Message::LEAVE, SocketInput.leave
+
   removePlayer: (name) ->
     player = super()
     @scene.removeChild player.object if player

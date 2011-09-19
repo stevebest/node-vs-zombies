@@ -7,18 +7,18 @@ module.exports = class SocketInput extends Input
 
   keyState = new Hashtable
 
-  window.socket.on Message::KEYDOWN, (player, keyCode) ->
+  @keyDown: (player, keyCode) ->
     keyState.get(player).put keyCode, true
 
-  window.socket.on Message::KEYUP, (player, keyCode) ->
+  @keyUp: (player, keyCode) ->
     keyState.get(player).put keyCode, false
 
-  window.socket.on Message::PLAYERS, (players) ->
+  @update: (players) ->
     (new Hashtable players).forEach (player, state) ->
       if !keyState.get player
         keyState.put player, new Hashtable
 
-  window.socket.on Message::LEAVE, (player) ->
+  @leave: (player) ->
     keyState.delete player
 
   constructor: (@player) ->
