@@ -18,13 +18,13 @@ module.exports = class SocketInput extends Input
       if !keyState.get player
         keyState.put player, new Hashtable
 
-  @leave: (player) ->
-    keyState.delete player
-
   constructor: (@player) ->
     keyState.put @player, new Hashtable
     Input::ALL.forEach (keyCode) =>
       keyState.get(@player).put keyCode, false
+
+  remove: ->
+    keyState.delete @player
 
   left:  -> keyState.get(@player).get Input::LEFT
   up:    -> keyState.get(@player).get Input::UP

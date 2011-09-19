@@ -13,6 +13,10 @@ module.exports = class PlayerGL extends Player
     @object = new THREE.Mesh PLAYER_GEOMETRY, material
     @scene.addChild @object
 
+  remove: ->
+    @scene.removeChild @object
+    @input.remove()
+
   update: (dt) ->
     super dt
 
