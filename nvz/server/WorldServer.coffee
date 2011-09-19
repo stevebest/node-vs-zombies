@@ -6,7 +6,7 @@ SocketInput = require './SocketInput'
 Message = require '../shared/Message'
 
 # The framerate at which the server updates the world
-SERVER_FRAMERATE = 30
+SERVER_FRAMERATE = 60
 
 # The interval at which the server performs the full
 # world synchronisation with the clients
