@@ -32,8 +32,7 @@ module.exports = class WorldGL extends World
     @camera.up = x: 0.0, y: 0.0, z: 1.0
     @camera.target.position = x: 0.0, y: 0.0, z: 2.0
 
-    groundMaterial = new THREE.MeshLambertMaterial color: 0xffdd99
-    THREE.ColorUtils.adjustHSV groundMaterial.color, 0, 0, 0.1
+    groundMaterial = new THREE.MeshLambertMaterial color: 0x774422
     ground = new THREE.Mesh(
       new THREE.PlaneGeometry World::SIZE, World::SIZE, 100, 100
       groundMaterial
