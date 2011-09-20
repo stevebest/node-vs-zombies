@@ -1,6 +1,6 @@
 Player = require '../shared/Player'
 
-module.exports = class PlayerGL extends Player
+class PlayerGL extends Player
 
   GEOMETRY = new THREE.CubeGeometry(0.4, 0.8, 1.7 * 2, 1, 1, 1)
   MATERIAL = new THREE.MeshLambertMaterial
@@ -34,3 +34,22 @@ module.exports = class PlayerGL extends Player
   loader.load model: '/images/Dude.js', callback: (geometry) ->
     GEOMETRY = geometry
     MATERIAL = geometry.materials[0]
+
+
+class HeroPlayerGL extends PlayerGL
+
+  constructor: (world) ->
+    super world
+
+    @zlight = new THREE.PointLight 0xffffff, 1.0, 15.0
+    @zlight.position.z = 5.0
+    @scene.addLight @zlight
+
+  update: (dt) ->
+    super dt
+
+    @zlight.position.x = @position.x
+    @zlight.position.y = @position.y
+
+
+module.exports = { PlayerGL, HeroPlayerGL }

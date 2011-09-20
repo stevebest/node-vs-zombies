@@ -2,7 +2,7 @@
 
 World = require '../shared/World'
 
-PlayerGL = require './PlayerGL'
+{ PlayerGL, HeroPlayerGL } = require './PlayerGL'
 KeyboardInput = require './KeyboardInput'
 SocketInput = require './SocketInput'
 Message = require '../shared/Message'
@@ -33,11 +33,6 @@ module.exports = class WorldGL extends World
     @initPlayer heroName
 
     @initGround()
-
-    # This meant to be player overhead light
-    zlight = new THREE.PointLight 0xffffff, 1.0, 15.0
-    zlight.position.z = 5.0
-    @scene.addLight zlight
 
     # Set up camera
     @camera = new ThirdPersonCamera(
@@ -74,7 +69,7 @@ module.exports = class WorldGL extends World
     socket.on Message::KEYUP, SocketInput.keyUp
 
   initPlayer: (name) ->
-    @hero = new PlayerGL this
+    @hero = new HeroPlayerGL this
     @hero.setInput new KeyboardInput
     @addPlayer name, @hero
 
