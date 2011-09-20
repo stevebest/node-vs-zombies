@@ -30,15 +30,9 @@ module.exports = class WorldGL extends World
     @renderer.setSize container.width(), container.height()
     container.append @renderer.domElement
 
-    @hero = new PlayerGL this
-    @hero.setInput new KeyboardInput
-    @addPlayer heroName, @hero
+    @initPlayer heroName
 
-    ground = new THREE.Mesh GEOMETRY, MATERIAL
-    @scene.addChild ground
-
-    ambient = new THREE.AmbientLight 0x222233
-    @scene.addLight ambient
+    @initGround()
 
     # This meant to be player overhead light
     zlight = new THREE.PointLight 0xffffff, 0.5, 10.0
@@ -75,6 +69,18 @@ module.exports = class WorldGL extends World
     socket.on Message::PLAYERS, SocketInput.update
     socket.on Message::KEYDOWN, SocketInput.keyDown
     socket.on Message::KEYUP, SocketInput.keyUp
+
+  initPlayer: (name) ->
+    @hero = new PlayerGL this
+    @hero.setInput new KeyboardInput
+    @addPlayer name, @hero
+
+  initGround: ->
+    ground = new THREE.Mesh GEOMETRY, MATERIAL
+    @scene.addChild ground
+
+    ambient = new THREE.AmbientLight 0x222233
+    @scene.addLight ambient
 
   removePlayer: (name) ->
     player = super name
