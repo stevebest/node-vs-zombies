@@ -12,6 +12,9 @@ ThirdPersonCamera = require './ThirdPersonCamera'
 
 module.exports = class WorldGL extends World
 
+  GEOMETRY = new THREE.PlaneGeometry World::SIZE, World::SIZE, 100, 100
+  MATERIAL = new THREE.MeshLambertMaterial color: 0x774422
+
   VIEW_ANGLE = 45
   NEAR = 0.1
   FAR = 100
@@ -31,11 +34,7 @@ module.exports = class WorldGL extends World
     @hero.setInput new KeyboardInput
     @addPlayer heroName, @hero
 
-    groundMaterial = new THREE.MeshLambertMaterial color: 0x774422
-    ground = new THREE.Mesh(
-      new THREE.PlaneGeometry World::SIZE, World::SIZE, 100, 100
-      groundMaterial
-    )
+    ground = new THREE.Mesh GEOMETRY, MATERIAL
     @scene.addChild ground
 
     ambient = new THREE.AmbientLight 0x222233
@@ -85,3 +84,8 @@ module.exports = class WorldGL extends World
     requestAnimationFrame @animate.bind(this)
     @simulate()
     @renderer.render @scene, @camera
+
+  loader = new THREE.JSONLoader false
+  loader.load model: '/images/Floor.js', callback: (geometry) ->
+    GEOMETRY = geometry
+    MATERIAL = geometry.materials[0]
