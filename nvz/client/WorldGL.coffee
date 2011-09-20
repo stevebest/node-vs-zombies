@@ -35,8 +35,8 @@ module.exports = class WorldGL extends World
     @initGround()
 
     # This meant to be player overhead light
-    zlight = new THREE.PointLight 0xffffff, 0.5, 10.0
-    zlight.position.z = 2.5
+    zlight = new THREE.PointLight 0xffffff, 1.0, 15.0
+    zlight.position.z = 5.0
     @scene.addLight zlight
 
     # Set up camera
@@ -46,6 +46,9 @@ module.exports = class WorldGL extends World
       near:   NEAR
       far:    FAR
       target: @hero.object
+      min:    7
+      max:    10
+      height: 5
     )
     # Z axis is up. Default Y up is STUPID!
     @camera.up = x: 0.0, y: 0.0, z: 1.0
