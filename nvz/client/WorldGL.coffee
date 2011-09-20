@@ -8,6 +8,8 @@ SocketInput = require './SocketInput'
 Message = require '../shared/Message'
 Hashtable = require '../shared/Hashtable'
 
+ThirdPersonCamera = require './ThirdPersonCamera'
+
 module.exports = class WorldGL extends World
 
   VIEW_ANGLE = 45
@@ -25,13 +27,6 @@ module.exports = class WorldGL extends World
     @renderer.setSize container.width(), container.height()
     container.append @renderer.domElement
 
-    @camera = new THREE.Camera(VIEW_ANGLE,
-      container.width() / container.height(), NEAR, FAR)
-    @camera.position = x: 0.0, y: -7.0, z: 4.5
-    # Z axis is up. Default Y up is STUPID!
-    @camera.up = x: 0.0, y: 0.0, z: 1.0
-    @camera.target.position = x: 0.0, y: 0.0, z: 2.0
-
     groundMaterial = new THREE.MeshLambertMaterial color: 0x774422
     ground = new THREE.Mesh(
       new THREE.PlaneGeometry World::SIZE, World::SIZE, 100, 100
@@ -46,9 +41,21 @@ module.exports = class WorldGL extends World
     @hero.setInput new KeyboardInput
     @addPlayer heroName, @hero
 
+    # This meant to be player overhead light
     zlight = new THREE.PointLight 0xffffff, 0.5, 10.0
     zlight.position.z = 2.5
     @scene.addLight zlight
+
+    # Set up camera
+    @camera = new ThirdPersonCamera(
+      fov:    VIEW_ANGLE
+      aspect: container.width() / container.height()
+      near:   NEAR
+      far:    FAR
+      target: @hero.object
+    )
+    # Z axis is up. Default Y up is STUPID!
+    @camera.up = x: 0.0, y: 0.0, z: 1.0
 
     socket.on Message::PLAYERS, (players) =>
       (new Hashtable players).forEach (name, state) =>
