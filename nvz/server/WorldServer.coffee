@@ -61,6 +61,8 @@ module.exports = class WorldServer extends World
     player = new Player this
     player.setInput new SocketInput(socket)
     socket.nickname = nick
+    socket.player = player
+    player.socket = socket
     @addPlayer nick, player
     @updateAllPlayers()
 
