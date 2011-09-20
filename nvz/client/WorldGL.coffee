@@ -27,6 +27,10 @@ module.exports = class WorldGL extends World
     @renderer.setSize container.width(), container.height()
     container.append @renderer.domElement
 
+    @hero = new PlayerGL this
+    @hero.setInput new KeyboardInput
+    @addPlayer heroName, @hero
+
     groundMaterial = new THREE.MeshLambertMaterial color: 0x774422
     ground = new THREE.Mesh(
       new THREE.PlaneGeometry World::SIZE, World::SIZE, 100, 100
@@ -36,10 +40,6 @@ module.exports = class WorldGL extends World
 
     ambient = new THREE.AmbientLight 0x222233
     @scene.addLight ambient
-
-    @hero = new PlayerGL this
-    @hero.setInput new KeyboardInput
-    @addPlayer heroName, @hero
 
     # This meant to be player overhead light
     zlight = new THREE.PointLight 0xffffff, 0.5, 10.0
