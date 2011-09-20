@@ -35,7 +35,7 @@ module.exports = class WorldGL extends World
     groundMaterial = new THREE.MeshLambertMaterial color: 0xffdd99
     THREE.ColorUtils.adjustHSV groundMaterial.color, 0, 0, 0.1
     ground = new THREE.Mesh(
-      new THREE.PlaneGeometry 100.0, 100.0, 100, 100
+      new THREE.PlaneGeometry World::SIZE, World::SIZE, 100, 100
       groundMaterial
     )
     @scene.addChild ground

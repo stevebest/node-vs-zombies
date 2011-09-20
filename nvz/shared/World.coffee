@@ -1,6 +1,12 @@
 Hashtable = require './Hashtable'
 
+clamp = (value, min, max) ->
+  `value < min ? min : value > max ? max : value`
+
 module.exports = class World
+
+  SIZE: 64.0;
+
   constructor: ->
     @players = new Hashtable
 
@@ -19,4 +25,6 @@ module.exports = class World
     @t = t
 
     @players.forEach (name, player) ->
+      player.position.x = clamp player.position.x, -World::SIZE, World::SIZE
+      player.position.y = clamp player.position.y, -World::SIZE, World::SIZE
       player.update dt
