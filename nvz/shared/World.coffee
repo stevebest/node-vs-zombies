@@ -25,6 +25,6 @@ module.exports = class World
     @t = t
 
     @players.forEach (name, player) ->
+      player.update dt
       player.position.x = clamp player.position.x, -World::SIZE, World::SIZE
       player.position.y = clamp player.position.y, -World::SIZE, World::SIZE
-      player.update dt
