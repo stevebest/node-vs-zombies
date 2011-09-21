@@ -78,8 +78,8 @@ module.exports = class WorldGL extends World
     @addPlayer name, @hero
 
   initGround: ->
-    ground = new THREE.Mesh GEOMETRY, MATERIAL
-    @scene.addChild ground
+    @ground = new THREE.Mesh GEOMETRY, MATERIAL
+    @scene.addChild @ground
 
     ambient = new THREE.AmbientLight 0x222233
     @scene.addLight ambient
@@ -91,6 +91,10 @@ module.exports = class WorldGL extends World
   animate: ->
     requestAnimationFrame @animate.bind(this)
     @simulate()
+
+    @ground.position.x = Math.floor(@hero.x / 2) * 2
+    @ground.position.y = Math.floor(@hero.y / 2) * 2
+
     @renderer.render @scene, @camera
 
   updateZombies: (zombies) ->
