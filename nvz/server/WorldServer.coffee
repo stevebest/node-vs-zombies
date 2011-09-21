@@ -63,10 +63,14 @@ module.exports = class WorldServer extends World
     if @getPlayer nick
       return true
     else
+      # let's have some fun
+      # @spawnZombies WorldServer::ZOMBIES_PER_NEW_PLAYER, World::ORIGIN, World::SIZE, World::SIZE
+
       player = @createPlayer nick, socket
       @placePlayer player
       @addPlayer nick, player
 
+      @updatePlayer player
       @updateAllPlayers()
       return false
 
@@ -81,6 +85,13 @@ module.exports = class WorldServer extends World
   placePlayer: (player) ->
     coordinates = x: 0.0, y: 0.0
     player.setLocation coordinates
+
+  # Update client with the recent state of the world around
+  updatePlayer: (player) ->
+    # TODO Only send nearby fellow players and zombies to a player
+    players = @players.invoke 'getState'
+    zombies = @zombies.invoke 'getState'
+    player.socket.emit Message::UPDATE, players, zombies
 
   updateAllPlayers: ->
     @io.sockets.emit Message::PLAYERS, @players.invoke('getState')

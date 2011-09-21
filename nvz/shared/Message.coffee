@@ -6,6 +6,9 @@ module.exports = class Message
   KEYDOWN: 'keydown'
   KEYUP:   'keyup'
 
+  # List of players, list of zombies
+  UPDATE:  'update'
+
   # List of players
   PLAYERS: 'nicknames'
 

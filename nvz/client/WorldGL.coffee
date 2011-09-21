@@ -3,6 +3,7 @@
 World = require '../shared/World'
 
 { PlayerGL, HeroPlayerGL } = require './PlayerGL'
+ZombieGL = require './ZombieGL'
 KeyboardInput = require './KeyboardInput'
 SocketInput = require './SocketInput'
 Message = require '../shared/Message'
@@ -47,6 +48,9 @@ module.exports = class WorldGL extends World
     )
     # Z axis is up. Default Y up is STUPID!
     @camera.up = x: 0.0, y: 0.0, z: 1.0
+
+    socket.on Message::UPDATE, (players, zombies) =>
+      @updateZombies zombies
 
     socket.on Message::PLAYERS, (players) =>
       (new Hashtable players).forEach (name, state) =>
@@ -93,3 +97,11 @@ module.exports = class WorldGL extends World
   loader.load model: '/images/Floor.js', callback: (geometry) ->
     GEOMETRY = geometry
     MATERIAL = geometry.materials[0]
+
+  updateZombies: (zombies) ->
+    (new Hashtable zombies).forEach (id, state) =>
+      zombie = @getZombie id
+      if undefined == zombie
+        zombie = new ZombieGL this
+        @addZombie id, zombie
+      zombie.setState state
