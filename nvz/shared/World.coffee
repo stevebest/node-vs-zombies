@@ -23,6 +23,7 @@ module.exports = class World
 
   removePlayer: (name) ->
     player = @players.delete name
+    player.die() if player
     player
 
   addZombie: (zombie) ->

@@ -56,6 +56,7 @@ module.exports = class Actor
     this
 
   die: ->
+    @health = -100
     this
 
   isDead: ->
