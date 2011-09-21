@@ -43,8 +43,11 @@ module.exports = class Actor
     this
 
   hit: ->
-    @die() if (@health -= 1) == 0
+    @die() if (@health -= 1) <= 0
     this
 
   die: ->
     this
+
+  isDead: ->
+    @health <= 0

@@ -43,3 +43,6 @@ module.exports = class World
       player.update dt
       player.x = clamp player.x, -World::SIZE, World::SIZE
       player.y = clamp player.y, -World::SIZE, World::SIZE
+
+    @zombies.forEach (id, zombie) ->
+      zombie.update dt
