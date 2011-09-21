@@ -54,17 +54,23 @@ module.exports = class WorldServer extends World
     if @getPlayer nick
       return true
     else
-      @createPlayer nick, socket
+      player = @createPlayer nick, socket
+      @placePlayer player
+      @addPlayer nick, player
       return false
-  
+
   createPlayer: (nick, socket) ->
     player = new Player this
     player.setInput new SocketInput(socket)
     socket.nickname = nick
     socket.player = player
     player.socket = socket
-    @addPlayer nick, player
     @updateAllPlayers()
+
+  # Picks a relatively safe, but crowded place for the player
+  placePlayer: (player) ->
+    coordinates = x: 0.0, y: 0.0
+    player.setLocation coordinates
 
   updateAllPlayers: ->
     @io.sockets.emit Message::PLAYERS, @players.invoke('getState')

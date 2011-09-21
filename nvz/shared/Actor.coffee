@@ -19,6 +19,13 @@ module.exports = class Actor
     { @x, @y, @heading, @health } = state
     this
 
+  getLocation: ->
+    { @x, @y }
+
+  setLocation: (coordinates) ->
+    { @x, @y } = coordinates
+    this
+
   walk: (dt) ->
     @x += Math.sin(@heading) * @speed * dt
     @y -= Math.cos(@heading) * @speed * dt
