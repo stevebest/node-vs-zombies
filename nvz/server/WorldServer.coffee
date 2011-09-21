@@ -101,7 +101,6 @@ module.exports = class WorldServer extends World
     players = @players.invoke 'getState'
     zombies = @zombies.invoke 'getState'
     process.nextTick ->
-      console.log "Updating player world of #{player}"
       player.socket.emit Message::UPDATE, { players, zombies }
 
   updateAllPlayers: ->
