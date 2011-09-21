@@ -119,7 +119,8 @@ module.exports = class WorldServer extends World
    and no farther than {max} meters away.
   ###
   spawnZombie: (location, min, max) ->
-    zombie = new Zombie this
+    zombie = new Zombie this, Math.floor(Math.random() * 0x7fffffff)
+
     phi = 2 * Math.PI * Math.random()
     rho = Math.random() * (max - min) + min
     zombie.x = location.x + rho * Math.sin(phi)

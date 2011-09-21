@@ -2,7 +2,7 @@ Actor = require './Actor'
 
 module.exports = class Zombie extends Actor
 
-  constructor: (world) ->
+  constructor: (world, @id) ->
     super world
 
     @speed = 1.0 / 1000
