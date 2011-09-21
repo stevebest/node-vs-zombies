@@ -31,6 +31,9 @@ module.exports = class World
   addZombie: (zombie) ->
     @zombies.put zombie.id, zombie
 
+  getZombie: (id) ->
+    @zombies.get id
+
   simulate: ->
     t = Date.now()
     dt = Math.min t - @t, 1000

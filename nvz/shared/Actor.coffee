@@ -17,13 +17,16 @@ module.exports = class Actor
 
   setState: (state) ->
     { @x, @y, @heading, @health } = state
-    this
+    @update 0
 
   getLocation: ->
     { @x, @y }
 
   setLocation: (coordinates) ->
     { @x, @y } = coordinates
+    this
+
+  update: (dt) ->
     this
 
   walk: (dt) ->

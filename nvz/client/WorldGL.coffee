@@ -49,7 +49,8 @@ module.exports = class WorldGL extends World
     # Z axis is up. Default Y up is STUPID!
     @camera.up = x: 0.0, y: 0.0, z: 1.0
 
-    socket.on Message::UPDATE, (players, zombies) =>
+    socket.on Message::UPDATE, (message) =>
+      { players, zombies } = message
       @updateZombies zombies
 
     socket.on Message::PLAYERS, (players) =>
@@ -64,7 +65,6 @@ module.exports = class WorldGL extends World
       return null # do not collect the comprehension result
 
     socket.on Message::LEAVE, (name) =>
-      console.log "Removing player #{name}"
       @removePlayer name
 
     # Update SocketInput, too
@@ -93,15 +93,18 @@ module.exports = class WorldGL extends World
     @simulate()
     @renderer.render @scene, @camera
 
-  loader = new THREE.JSONLoader false
-  loader.load model: '/images/Floor.js', callback: (geometry) ->
-    GEOMETRY = geometry
-    MATERIAL = geometry.materials[0]
-
   updateZombies: (zombies) ->
     (new Hashtable zombies).forEach (id, state) =>
       zombie = @getZombie id
       if undefined == zombie
-        zombie = new ZombieGL this
-        @addZombie id, zombie
+        zombie = new ZombieGL this, id
+        @addZombie zombie
       zombie.setState state
+
+
+  # Asset loading
+
+  loader = new THREE.JSONLoader false
+  loader.load model: '/images/Floor.js', callback: (geometry) ->
+    GEOMETRY = geometry
+    MATERIAL = geometry.materials[0]

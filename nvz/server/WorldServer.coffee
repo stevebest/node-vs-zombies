@@ -35,7 +35,7 @@ module.exports = class WorldServer extends World
     setInterval @updateAllPlayers.bind(this), SYNC_INTERVAL
 
     # let's have some fun
-    @spawnZombies WorldServer::ZOMBIES_AT_START, World::ORIGIN, 0, World::SIZE
+    @spawnZombies WorldServer::ZOMBIES_AT_START, World::ORIGIN, 5, World::SIZE
 
   animate: ->
     requestAnimationFrame @animate.bind(this)
@@ -100,7 +100,9 @@ module.exports = class WorldServer extends World
     # TODO Only send nearby fellow players and zombies to a player
     players = @players.invoke 'getState'
     zombies = @zombies.invoke 'getState'
-    player.socket.emit Message::UPDATE, players, zombies
+    process.nextTick ->
+      console.log "Updating player world of #{player}"
+      player.socket.emit Message::UPDATE, { players, zombies }
 
   updateAllPlayers: ->
     @io.sockets.emit Message::PLAYERS, @players.invoke('getState')
@@ -119,10 +121,14 @@ module.exports = class WorldServer extends World
    and no farther than {max} meters away.
   ###
   spawnZombie: (location, min, max) ->
+    randomAngle = -> 2 * Math.PI * Math.random()
+
     zombie = new Zombie this, Math.floor(Math.random() * 0x7fffffff)
 
-    phi = 2 * Math.PI * Math.random()
+    phi = randomAngle()
     rho = Math.random() * (max - min) + min
     zombie.x = location.x + rho * Math.sin(phi)
-    zombie.y = location.y + rho * Math.sin(phi)
+    zombie.y = location.y + rho * Math.cos(phi)
+    zombie.heading = randomAngle()
+
     @addZombie zombie
