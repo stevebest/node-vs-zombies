@@ -26,7 +26,7 @@ module.exports = class ZombieGL extends Zombie
     @object.position.x = @x
     @object.position.y = @y
 
-    @object.rotation.z = @heading
+    @object.rotation.z = @heading + (Math.PI / 2)
 
     this
 
