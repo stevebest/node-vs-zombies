@@ -19,6 +19,12 @@ requestAnimationFrame = (callback) ->
 
 module.exports = class WorldServer extends World
 
+  # Number of zombies permanently present in the world
+  ZOMBIES_AT_START: 100
+
+  # Additional number of zombies arrearing when new player joins the game
+  ZOMBIES_PER_NEW_PLAYER: 10
+
   constructor: (@io) ->
     super()
     world = this
@@ -26,6 +32,9 @@ module.exports = class WorldServer extends World
     @io.sockets.on 'connection', @acceptConnection.bind(this)
     
     setInterval @updateAllPlayers.bind(this), SYNC_INTERVAL
+
+    # let's have some fun
+    @spawnZombies WorldServer::ZOMBIES_AT_START
 
   animate: ->
     requestAnimationFrame @animate.bind(this)
@@ -57,6 +66,8 @@ module.exports = class WorldServer extends World
       player = @createPlayer nick, socket
       @placePlayer player
       @addPlayer nick, player
+
+      @updateAllPlayers()
       return false
 
   createPlayer: (nick, socket) ->
@@ -65,7 +76,6 @@ module.exports = class WorldServer extends World
     socket.nickname = nick
     socket.player = player
     player.socket = socket
-    @updateAllPlayers()
 
   # Picks a relatively safe, but crowded place for the player
   placePlayer: (player) ->
@@ -74,3 +84,20 @@ module.exports = class WorldServer extends World
 
   updateAllPlayers: ->
     @io.sockets.emit Message::PLAYERS, @players.invoke('getState')
+
+  # Spawns {n} zombies near {location},
+  # no closer than {min} meters,
+  # and no farther than {max} meters away.
+  spawnZombies: (n, location, min, max) ->
+    zombies = spawnZombie location for i in [1..n]
+
+  # Spawns a zombie near a given {location},
+  # no closer than {min} meters,
+  # and no farther than {max} meters away.
+  spawnZombie: (location, min, max) ->
+    zombie = new Zombie this
+    phi = 2 * Math.PI * Math.random()
+    rho = Math.random() * (max - min) + min
+    zombie.x = location.x + rho * Math.sin(phi)
+    zombie.y = location.y + rho * Math.sin(phi)
+    @addZombie zombie
