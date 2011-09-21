@@ -2,7 +2,9 @@
 module.exports = class Actor
 
   constructor: (@world) ->
-    @position = x: 0.0, y: 0.0, z: 0.0
+    @x = 0.0
+    @y = 0.0
+    # @z = 0.0
     @heading = 0.0
 
     @speed = 3.0 / 1000;
@@ -11,15 +13,15 @@ module.exports = class Actor
     @health = 1
 
   getState: ->
-    { @position, @heading, @health }
+    { @x, @y, @heading, @health }
 
   setState: (state) ->
-    { @position, @heading, @health } = state
+    { @x, @y, @heading, @health } = state
     this
 
   walk: (dt) ->
-    @position.x += Math.sin(@heading) * @speed * dt
-    @position.y -= Math.cos(@heading) * @speed * dt
+    @x += Math.sin(@heading) * @speed * dt
+    @y -= Math.cos(@heading) * @speed * dt
     this
 
   turn: (dt) ->

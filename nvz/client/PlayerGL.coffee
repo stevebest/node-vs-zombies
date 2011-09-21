@@ -23,8 +23,8 @@ class PlayerGL extends Player
   update: (dt) ->
     super dt
 
-    @object.position.x = @position.x
-    @object.position.y = @position.y
+    @object.position.x = @x
+    @object.position.y = @y
 
     @object.rotation.z = @heading
 
@@ -48,8 +48,8 @@ class HeroPlayerGL extends PlayerGL
   update: (dt) ->
     super dt
 
-    @zlight.position.x = @position.x
-    @zlight.position.y = @position.y
+    @zlight.position.x = @x
+    @zlight.position.y = @y
 
 
 module.exports = { PlayerGL, HeroPlayerGL }
