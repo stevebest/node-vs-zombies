@@ -12,20 +12,17 @@ module.exports = class World
   SIZE: 64.0;
 
   constructor: ->
-    @actors = []
     @players = new Hashtable
     @zombies = new Hashtable
 
   addPlayer: (name, player) ->
     @players.put name, player
-    @actors.push player
 
   getPlayer: (name) ->
     @players.get name
 
   removePlayer: (name) ->
     player = @players.delete name
-    delete @actors[@actors.indexOf player] if player
     player
 
   addZombie: (zombie) ->
