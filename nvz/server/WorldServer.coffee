@@ -1,6 +1,7 @@
 
 World = require '../shared/World'
 Player = require '../shared/Player'
+Zombie = require '../shared/Zombie'
 
 SocketInput = require './SocketInput'
 Message = require '../shared/Message'
@@ -34,7 +35,7 @@ module.exports = class WorldServer extends World
     setInterval @updateAllPlayers.bind(this), SYNC_INTERVAL
 
     # let's have some fun
-    @spawnZombies WorldServer::ZOMBIES_AT_START
+    @spawnZombies WorldServer::ZOMBIES_AT_START, World::ORIGIN, 0, World::SIZE
 
   animate: ->
     requestAnimationFrame @animate.bind(this)
@@ -56,8 +57,10 @@ module.exports = class WorldServer extends World
       @removePlayer socket.nickname
       socket.broadcast.emit Message::LEAVE, socket.nickname
 
-  # Tries to create a new player with a given name
-  # @return true, if the name is already taken
+  ###
+   Tries to create a new player with a given name
+   @return true, if the name is already taken
+  ###
   joinPlayer: (nick, socket) ->
     console.log "Player #{nick} tries to join the party"
     if @getPlayer nick
@@ -80,13 +83,19 @@ module.exports = class WorldServer extends World
     socket.nickname = nick
     socket.player = player
     player.socket = socket
+    return player
 
-  # Picks a relatively safe, but crowded place for the player
+  ###
+   Picks a relatively safe, but crowded place for the player
+  ###
   placePlayer: (player) ->
     coordinates = x: 0.0, y: 0.0
     player.setLocation coordinates
+    return coordinates
 
-  # Update client with the recent state of the world around
+  ###
+   Update client with the recent state of the world around
+  ###
   updatePlayer: (player) ->
     # TODO Only send nearby fellow players and zombies to a player
     players = @players.invoke 'getState'
@@ -96,15 +105,19 @@ module.exports = class WorldServer extends World
   updateAllPlayers: ->
     @io.sockets.emit Message::PLAYERS, @players.invoke('getState')
 
-  # Spawns {n} zombies near {location},
-  # no closer than {min} meters,
-  # and no farther than {max} meters away.
+  ###
+   Spawns {n} zombies near {location},
+   no closer than {min} meters,
+   and no farther than {max} meters away.
+  ###
   spawnZombies: (n, location, min, max) ->
-    zombies = spawnZombie location for i in [1..n]
+    zombies = (@spawnZombie location, min, max for i in [1..n])
 
-  # Spawns a zombie near a given {location},
-  # no closer than {min} meters,
-  # and no farther than {max} meters away.
+  ###
+   Spawns a zombie near a given {location},
+   no closer than {min} meters,
+   and no farther than {max} meters away.
+  ###
   spawnZombie: (location, min, max) ->
     zombie = new Zombie this
     phi = 2 * Math.PI * Math.random()
