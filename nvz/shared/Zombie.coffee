@@ -2,6 +2,9 @@ Actor = require './Actor'
 
 module.exports = class Zombie extends Actor
 
+  AGGRO_DISTANCE: 10.0
+  MAX_AGGRO_DISTANCE: 30.0
+
   constructor: (world, @id) ->
     super world
 
@@ -13,19 +16,21 @@ module.exports = class Zombie extends Actor
   update: (dt) ->
     super dt
 
-    @findPlayer  if @player == null
-    @chasePlayer if @player != null
+    @findPlayer()   if !@player
+    @chasePlayer dt if  @player
 
   attack: (player) ->
     # TODO
     this
 
   findPlayer: ->
-    # TODO
-    this
+    @player = @world.players.find (player) =>
+      @distanceTo(player) < Zombie::AGGRO_DISTANCE
 
-  chasePlayer: ->
+  chasePlayer: (dt) ->
+    @changeHeading @player, dt
+
     @walk dt
-    @attack player if 0 # TODO very close to player
+    @attack @player if 0 # TODO very close to player
 
-    @player = null if @player.isDead()
+    @player = null if @player.isDead() or @distanceTo(@player) > Zombie::MAX_AGGRO_DISTANCE

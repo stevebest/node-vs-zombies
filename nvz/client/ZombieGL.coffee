@@ -6,8 +6,8 @@ module.exports = class ZombieGL extends Zombie
   GEOMETRY = new THREE.CubeGeometry(0.4, 0.8, 1.7 * 2, 1, 1, 1)
   MATERIAL = new THREE.MeshLambertMaterial
 
-  constructor: (world) ->
-    super world
+  constructor: (world, id) ->
+    super world, id
 
     @scene = world.scene
 

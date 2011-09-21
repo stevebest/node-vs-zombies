@@ -22,6 +22,15 @@ var Hashtable = function(object) {
     }
   };
 
+  this.find = function(fn) {
+    for (var key in table) {
+      if (fn(table[key])) {
+        return table[key];
+      }
+    }
+    return null;
+  }
+
   this.invoke = function() {
     var methodName = arguments[0];
     var a = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
