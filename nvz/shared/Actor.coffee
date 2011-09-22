@@ -12,6 +12,8 @@ module.exports = class Actor
 
   RADIUS: 0.5;
 
+  MASS: 100000;
+
   actors = [];
 
   constructor: (@world) ->
@@ -49,27 +51,33 @@ module.exports = class Actor
 
   walk: (dt) ->
     myself = this
-    @x += Math.cos(@heading) * @speed * dt
-    @y += Math.sin(@heading) * @speed * dt
 
-    @x += @force.x / 1000 * dt
-    @y += @force.y / 1000 * dt
+    vx = Math.cos(@heading) * @speed +
+        (@force.x / Actor::MASS) * dt
+    vy = Math.sin(@heading) * @speed +
+        (@force.y / Actor::MASS) * dt
 
-    @force = x: 0, y: 0
+    @x += vx * dt
+    @y += vy * dt
+
+    @force.x = 0
+    @force.y = 0
 
     colliding = actors.filter (other) ->
       !!other and
         other != myself and
-        myself.isHeadingTo(other) and
         myself.distanceTo(other) < 2 * Actor::RADIUS
 
     colliding.forEach (other) ->
-      dfx = 1 / (other.x - myself.x)
-      dfy = 1 / (other.y - myself.y)
+      phi = myself.headingTo other
+      rho = 2 * Actor::RADIUS - myself.distanceTo other
+      f = Math.pow(1 - Math.cos(Math.PI * (1 - rho)), 4)
+
+      dfx = f * Math.cos(phi)
+      dfy = f * Math.sin(phi)
+
       other.force.x += dfx
       other.force.y += dfy
-      myself.force.x += -dfx
-      myself.force.y += -dfy
 
     this
 
