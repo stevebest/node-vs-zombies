@@ -1,3 +1,4 @@
+Actor = require './Actor'
 Hashtable = require './Hashtable'
 
 clamp = (value, min, max) ->
@@ -36,6 +37,8 @@ module.exports = class World
     t = Date.now()
     dt = Math.min t - @t, 1000
     @t = t
+
+    Actor.updateCollisions()
 
     @players.forEach (name, player) ->
       player.update dt

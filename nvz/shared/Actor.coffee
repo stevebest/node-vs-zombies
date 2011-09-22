@@ -46,12 +46,35 @@ module.exports = class Actor
     { @x, @y } = coordinates
     this
 
+  @updateCollisions: ->
+    actors.forEach (actor) ->
+      actor.collide() if !!actor
+
+  collide: ->
+    myself = this
+
+    colliding = actors.filter (other) ->
+      !!other and
+        other != myself and
+        myself.distanceTo(other) < 2 * Actor::RADIUS
+
+    colliding.forEach (other) ->
+      phi = myself.headingTo other
+      rho = 2 * Actor::RADIUS - myself.distanceTo other
+      f = Math.pow(1 - Math.cos(Math.PI * (1 - rho)), 3)
+
+      dfx = f * Math.cos(phi)
+      dfy = f * Math.sin(phi)
+
+      other.force.x += dfx
+      other.force.y += dfy
+
+    this
+
   update: (dt) ->
     this
 
   walk: (dt) ->
-    myself = this
-
     vx = Math.cos(@heading) * @speed +
         (@force.x / Actor::MASS) * dt
     vy = Math.sin(@heading) * @speed +
@@ -62,22 +85,6 @@ module.exports = class Actor
 
     @force.x = 0
     @force.y = 0
-
-    colliding = actors.filter (other) ->
-      !!other and
-        other != myself and
-        myself.distanceTo(other) < 2 * Actor::RADIUS
-
-    colliding.forEach (other) ->
-      phi = myself.headingTo other
-      rho = 2 * Actor::RADIUS - myself.distanceTo other
-      f = Math.pow(1 - Math.cos(Math.PI * (1 - rho)), 4)
-
-      dfx = f * Math.cos(phi)
-      dfy = f * Math.sin(phi)
-
-      other.force.x += dfx
-      other.force.y += dfy
 
     this
 
