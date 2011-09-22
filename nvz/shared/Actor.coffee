@@ -3,7 +3,10 @@
  Bounds an angle to a [-π, π] range
 ###
 clampAngle = (angle) ->
-  ((angle + Math.PI) % (2 * Math.PI)) - Math.PI
+  if angle >= 0
+    ((angle + Math.PI) % (2 * Math.PI)) - Math.PI
+  else
+    ((angle - Math.PI) % (2 * Math.PI)) + Math.PI
 
 module.exports = class Actor
 
