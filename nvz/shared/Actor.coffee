@@ -7,6 +7,10 @@ clampAngle = (angle) ->
 
 module.exports = class Actor
 
+  RADIUS: 0.5;
+
+  actors = [];
+
   constructor: (@world) ->
     @x = 0.0
     @y = 0.0
@@ -17,6 +21,8 @@ module.exports = class Actor
     @turnSpeed = Math.PI / 1000;
 
     @health = 1
+
+    actors.push this
 
   getState: ->
     { @x, @y, @heading, @health }
@@ -36,6 +42,14 @@ module.exports = class Actor
     this
 
   walk: (dt) ->
+    myself = this
+    collides = actors.some (other) ->
+      !!other and
+        other != myself and
+        myself.isHeadingTo(other) and
+        myself.distanceTo(other) < 2 * Actor::RADIUS
+    return if collides
+
     @x += Math.cos(@heading) * @speed * dt
     @y += Math.sin(@heading) * @speed * dt
     this
@@ -57,6 +71,7 @@ module.exports = class Actor
 
   die: ->
     @health = -100
+    delete actors[actors.indexOf this]
     this
 
   isDead: ->
@@ -67,6 +82,12 @@ module.exports = class Actor
   ###
   headingTo: (point) ->
     Math.atan2(point.y - @y, point.x - @x)
+
+  ###
+   Returns true if the point is in the front half-plane relative to us
+  ###
+  isHeadingTo: (point) ->
+    Math.abs(clampAngle(@headingTo(point) - @heading)) < Math.PI / 2
 
   ###
    Turns in a direction optimal to reach the given point
