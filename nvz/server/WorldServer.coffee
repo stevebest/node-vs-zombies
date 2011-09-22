@@ -6,6 +6,8 @@ Zombie = require '../shared/Zombie'
 SocketInput = require './SocketInput'
 Message = require '../shared/Message'
 
+Hashtable = require '../shared/Hashtable'
+
 # The framerate at which the server updates the world
 SERVER_FRAMERATE = 60
 
@@ -34,8 +36,7 @@ module.exports = class WorldServer extends World
     
     setInterval @updateAllPlayers.bind(this), SYNC_INTERVAL
 
-    # let's have some fun
-    @spawnZombies WorldServer::ZOMBIES_AT_START, World::ORIGIN, 5, World::SIZE
+    @addInitialZombies()
 
   animate: ->
     requestAnimationFrame @animate.bind(this)
@@ -105,6 +106,15 @@ module.exports = class WorldServer extends World
 
   updateAllPlayers: ->
     @io.sockets.emit Message::PLAYERS, @players.invoke('getState')
+
+  removePlayer: (name) ->
+    super name
+    if @players.isEmpty()
+      @zombies = new Hashtable
+      @addInitialZombies()
+
+  addInitialZombies: ->
+    @spawnZombies WorldServer::ZOMBIES_AT_START, World::ORIGIN, 5, World::SIZE
 
   ###
    Spawns {n} zombies near {location},

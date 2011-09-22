@@ -51,6 +51,13 @@ var Hashtable = function(object) {
     return deleted;
   }
 
+  this.isEmpty = function() {
+    for (key in table) {
+      return false;
+    }
+    return true;
+  }
+
 };
 
 module.exports = Hashtable;
