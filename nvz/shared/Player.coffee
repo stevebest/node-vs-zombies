@@ -22,7 +22,7 @@ module.exports = class Player extends Actor
     else if @input.down()
       @walk -dt / 2.0
     else
-      @idle
+      @idle()
 
     this
 
