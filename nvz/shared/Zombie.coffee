@@ -34,3 +34,4 @@ module.exports = class Zombie extends Actor
     @attack @player if 0 # TODO very close to player
 
     @player = null if @player.isDead() or @distanceTo(@player) > Zombie::MAX_AGGRO_DISTANCE
+    this
