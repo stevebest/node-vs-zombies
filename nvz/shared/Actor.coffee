@@ -33,10 +33,10 @@ module.exports = class Actor
     actors.push this
 
   getState: ->
-    { @x, @y, @heading, @health }
+    { @x, @y, @heading, @health, @speed }
 
   setState: (state) ->
-    { @x, @y, @heading, @health } = state
+    { @x, @y, @heading, @health, @speed } = state
     @update 0
 
   getLocation: ->
