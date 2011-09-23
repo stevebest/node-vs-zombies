@@ -59,6 +59,8 @@ module.exports = class WorldServer extends World
       @removePlayer socket.nickname
       socket.broadcast.emit Message::LEAVE, socket.nickname
 
+    this
+
   ###
    Tries to create a new player with a given name
    @return true, if the name is already taken
@@ -116,8 +118,8 @@ module.exports = class WorldServer extends World
   spawnZombie: ->
     zombie = new Zombie this, Math.floor(Math.random() * 0x7fffffff)
 
-    zombie.x = G.randomPosition World::SIZE
-    zombie.y = G.randomPosition World::SIZE
+    zombie.x = G.randomPosition @getSize()
+    zombie.y = G.randomPosition @getSize()
     zombie.heading = G.randomAngle()
     zombie.targetHeading = zombie.heading
 
