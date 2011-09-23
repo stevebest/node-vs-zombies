@@ -1,12 +1,4 @@
-
-###
- Bounds an angle to a [-π, π] range
-###
-clampAngle = (angle) ->
-  if angle >= 0
-    ((angle + Math.PI) % (2 * Math.PI)) - Math.PI
-  else
-    ((angle - Math.PI) % (2 * Math.PI)) + Math.PI
+G = require './Geometry'
 
 module.exports = class Actor
 
@@ -94,7 +86,7 @@ module.exports = class Actor
    Change heading for elapsed period of time
   ###
   turn: (dt) ->
-    @heading = clampAngle(@heading + @turnSpeed * dt)
+    @heading = G.clampAngle(@heading + @turnSpeed * dt)
     this
 
   idle: ->
@@ -123,13 +115,13 @@ module.exports = class Actor
    Returns true if the point is in the front half-plane relative to us
   ###
   isHeadingTo: (point) ->
-    Math.abs(clampAngle(@headingTo(point) - @heading)) < Math.PI / 2
+    Math.abs(G.clampAngle(@headingTo(point) - @heading)) < Math.PI / 2
 
   ###
-   Turns in a direction optimal to reach the given point
+   Turns in a direction optimal to reach @targetHeading
   ###
-  changeHeading: (point, dt) ->
-    alpha = clampAngle(@headingTo(point) - @heading)
+  changeHeading: (dt) ->
+    alpha = G.clampAngle(@targetHeading - @heading)
 
     return if Math.abs(alpha) < 0.01
 

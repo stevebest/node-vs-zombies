@@ -7,6 +7,7 @@ SocketInput = require './SocketInput'
 Message = require '../shared/Message'
 
 Hashtable = require '../shared/Hashtable'
+G = require '../shared/Geometry'
 
 # The framerate at which the server updates the world
 SERVER_FRAMERATE = 60
@@ -110,34 +111,21 @@ module.exports = class WorldServer extends World
   removePlayer: (name) ->
     super name
     if @players.isEmpty()
-      @zombies = new Hashtable
       @addInitialZombies()
 
   addInitialZombies: ->
-    @spawnZombies WorldServer::ZOMBIES_AT_START, World::ORIGIN, 5, World::SIZE
+    @zombies = new Hashtable
+    @spawnZombies WorldServer::ZOMBIES_AT_START
 
-  ###
-   Spawns {n} zombies near {location},
-   no closer than {min} meters,
-   and no farther than {max} meters away.
-  ###
-  spawnZombies: (n, location, min, max) ->
-    zombies = (@spawnZombie location, min, max for i in [1..n])
+  spawnZombies: (n) ->
+    zombies = (@spawnZombie() for i in [1..n])
 
-  ###
-   Spawns a zombie near a given {location},
-   no closer than {min} meters,
-   and no farther than {max} meters away.
-  ###
-  spawnZombie: (location, min, max) ->
-    randomAngle = -> 2 * Math.PI * Math.random()
-
+  spawnZombie: ->
     zombie = new Zombie this, Math.floor(Math.random() * 0x7fffffff)
 
-    phi = randomAngle()
-    rho = Math.random() * (max - min) + min
-    zombie.x = location.x + rho * Math.sin(phi)
-    zombie.y = location.y + rho * Math.cos(phi)
-    zombie.heading = randomAngle()
+    zombie.x = G.randomPosition World::SIZE
+    zombie.y = G.randomPosition World::SIZE
+    zombie.heading = G.randomAngle()
+    zombie.targetHeading = zombie.heading
 
     @addZombie zombie
