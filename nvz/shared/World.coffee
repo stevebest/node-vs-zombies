@@ -12,6 +12,7 @@ module.exports = class World
   constructor: ->
     @players = new Hashtable
     @zombies = new Hashtable
+    @t = Date.now()
 
   getSize: -> World::SIZE
 
