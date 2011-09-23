@@ -34,8 +34,8 @@ module.exports = class WorldServer extends World
     world = this
 
     @io.sockets.on 'connection', @acceptConnection.bind(this)
-    
-    setInterval @updateAllPlayers.bind(this), SYNC_INTERVAL
+
+#    setInterval @updateAllPlayers.bind(this), SYNC_INTERVAL
 
     @addInitialZombies()
 
@@ -99,10 +99,7 @@ module.exports = class WorldServer extends World
     # TODO Only send nearby fellow players and zombies to a player
     players = @players.invoke 'getState'
     zombies = @zombies.invoke 'getState'
-
     player.socket.emit Message::UPDATE, { players, zombies }
-  updateAllPlayers: ->
-    @io.sockets.emit Message::PLAYERS, @players.invoke('getState')
 
   removePlayer: (name) ->
     super name
