@@ -66,6 +66,8 @@ module.exports = class Actor
       dfx = f * Math.cos(phi)
       dfy = f * Math.sin(phi)
 
+      myself.force.x -= dfx
+      myself.force.y -= dfy
       other.force.x += dfx
       other.force.y += dfy
 
