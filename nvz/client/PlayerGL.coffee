@@ -1,39 +1,14 @@
+ActorGL = require './ActorGL'
 Player = require '../shared/Player'
 
-class PlayerGL extends Player
 
-  GEOMETRY = new THREE.CubeGeometry(0.4, 0.8, 1.7 * 2, 1, 1, 1)
-  MATERIAL = new THREE.MeshLambertMaterial
+class PlayerGL extends ActorGL
 
   constructor: (world) ->
-    super world
+    super world, new Player(world)
 
-    @scene = world.scene
-
-    @object = new THREE.Mesh GEOMETRY, MATERIAL
-
-    @object.position.z = 0
-
-    @scene.addChild @object
-
-  remove: ->
-    @scene.removeChild @object
-    @input.remove()
-
-  update: (dt) ->
-    super dt
-
-    @object.position.x = @x
-    @object.position.y = @y
-
-    @object.rotation.z = @heading + (Math.PI / 2)
-
-    this
-
-  loader = new THREE.JSONLoader false
-  loader.load model: '/images/Dude.js', callback: (geometry) ->
-    GEOMETRY = geometry
-    MATERIAL = geometry.materials[0]
+  setInput: (input) ->
+    @actor.setInput input
 
 
 class HeroPlayerGL extends PlayerGL
@@ -48,8 +23,8 @@ class HeroPlayerGL extends PlayerGL
   update: (dt) ->
     super dt
 
-    @zlight.position.x = @x
-    @zlight.position.y = @y
+    @zlight.position.x = @actor.x
+    @zlight.position.y = @actor.y
 
 
 module.exports = { PlayerGL, HeroPlayerGL }
