@@ -50,10 +50,13 @@ module.exports = class WorldGL extends World
     @camera.up = x: 0.0, y: 0.0, z: 1.0
 
     socket.on Message::UPDATE, (message) =>
+      console.log "UPDATE", message
       { players, zombies } = message
+      @updatePlayers players
       @updateZombies zombies
 
     socket.on Message::LEAVE, (name) =>
+      console.log "LEAVE", name
       @removePlayer name
 
     # Update SocketInput, too
@@ -85,10 +88,20 @@ module.exports = class WorldGL extends World
 
     @renderer.render @scene, @camera
 
+  updatePlayers: (players) ->
+    (new Hashtable players).forEach (name, state) =>
+      player = @getPlayer name
+      if !player
+        player = new PlayerGL this
+        player.setInput new SocketInput name
+        @addPlayer name, player
+      player.setState state
+      player.update 0
+
   updateZombies: (zombies) ->
     (new Hashtable zombies).forEach (id, state) =>
       zombie = @getZombie id
-      if undefined == zombie
+      if !zombie
         zombie = new ZombieGL this, id
         @addZombie zombie
       zombie.setState state
