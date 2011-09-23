@@ -115,22 +115,12 @@ module.exports = class WorldServer extends World
       @addInitialZombies()
 
   addInitialZombies: ->
-    @spawnZombies WorldServer::ZOMBIES_AT_START, World::ORIGIN, 5, World::SIZE
+    @spawnZombies WorldServer::ZOMBIES_AT_START
 
-  ###
-   Spawns {n} zombies near {location},
-   no closer than {min} meters,
-   and no farther than {max} meters away.
-  ###
-  spawnZombies: (n, location, min, max) ->
-    zombies = (@spawnZombie location, min, max for i in [1..n])
+  spawnZombies: (n) ->
+    zombies = (@spawnZombie() for i in [1..n])
 
-  ###
-   Spawns a zombie near a given {location},
-   no closer than {min} meters,
-   and no farther than {max} meters away.
-  ###
-  spawnZombie: (location, min, max) ->
+  spawnZombie: ->
     zombie = new Zombie this, Math.floor(Math.random() * 0x7fffffff)
 
     zombie.x = G.randomPosition World::SIZE
