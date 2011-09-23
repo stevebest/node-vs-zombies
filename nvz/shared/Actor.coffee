@@ -118,10 +118,10 @@ module.exports = class Actor
     Math.abs(G.clampAngle(@headingTo(point) - @heading)) < Math.PI / 2
 
   ###
-   Turns in a direction optimal to reach the given point
+   Turns in a direction optimal to reach @targetHeading
   ###
-  changeHeading: (point, dt) ->
-    alpha = G.clampAngle(@headingTo(point) - @heading)
+  changeHeading: (dt) ->
+    alpha = G.clampAngle(@targetHeading - @heading)
 
     return if Math.abs(alpha) < 0.01
 

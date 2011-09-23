@@ -126,5 +126,6 @@ module.exports = class WorldServer extends World
     zombie.x = G.randomPosition World::SIZE
     zombie.y = G.randomPosition World::SIZE
     zombie.heading = G.randomAngle()
+    zombie.targetHeading = zombie.heading
 
     @addZombie zombie
