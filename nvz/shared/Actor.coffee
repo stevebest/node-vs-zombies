@@ -61,7 +61,7 @@ module.exports = class Actor
     colliding.forEach (other) ->
       phi = myself.headingTo other
       rho = 1 - myself.distanceTo(other) / (2 * Actor::RADIUS)
-      f = Math.pow(1 - Math.cos(Math.PI * (1 - rho)), 3)
+      f = 10 - 10*rho
 
       dfx = f * Math.cos(phi)
       dfy = f * Math.sin(phi)
