@@ -1,9 +1,13 @@
 Actor = require './Actor'
 
+G = require './Geometry'
+
+randomAngle = G.randomAngle
+
 module.exports = class Zombie extends Actor
 
-  AGGRO_DISTANCE: 10.0
-  MAX_AGGRO_DISTANCE: 30.0
+  AGGRO_DISTANCE: 5.0
+  MAX_AGGRO_DISTANCE: 20.0
 
   constructor: (world, @id) ->
     super world
@@ -17,7 +21,12 @@ module.exports = class Zombie extends Actor
     super dt
 
     @findPlayer()   if !@player
-    @chasePlayer dt if  @player
+
+    if @player
+      @chasePlayer dt
+    else
+      @changeHeading dt
+      @walk dt / 2
 
   attack: (player) ->
     # TODO
@@ -28,10 +37,17 @@ module.exports = class Zombie extends Actor
       @distanceTo(player) < Zombie::AGGRO_DISTANCE
 
   chasePlayer: (dt) ->
-    @changeHeading @player, dt
+    @targetHeading = @headingTo @player
+    @changeHeading dt
 
     @walk dt
     @attack @player if 0 # TODO very close to player
 
-    @player = null if @player.isDead() or @distanceTo(@player) > Zombie::MAX_AGGRO_DISTANCE
+    @losePlayer() if @player.isDead() or
+                     @distanceTo(@player) > Zombie::MAX_AGGRO_DISTANCE
+
     this
+
+  losePlayer: ->
+    @targetHeading = randomAngle()
+    @player = null

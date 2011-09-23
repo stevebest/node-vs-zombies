@@ -131,13 +131,12 @@ module.exports = class WorldServer extends World
   ###
   spawnZombie: (location, min, max) ->
     randomAngle = -> 2 * Math.PI * Math.random()
+    randomPosition = -> (2 * Math.random() - 1) * World::SIZE
 
     zombie = new Zombie this, Math.floor(Math.random() * 0x7fffffff)
 
-    phi = randomAngle()
-    rho = Math.random() * (max - min) + min
-    zombie.x = location.x + rho * Math.sin(phi)
-    zombie.y = location.y + rho * Math.cos(phi)
+    zombie.x = randomPosition()
+    zombie.y = randomPosition()
     zombie.heading = randomAngle()
 
     @addZombie zombie
