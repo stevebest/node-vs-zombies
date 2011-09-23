@@ -72,8 +72,8 @@ module.exports = class WorldServer extends World
       @placePlayer player
       @addPlayer nick, player
 
-      @updatePlayer player
-      @updateAllPlayers()
+      process.nextTick => @updatePlayer player
+
       return false
 
   createPlayer: (nick, socket) ->
@@ -99,9 +99,8 @@ module.exports = class WorldServer extends World
     # TODO Only send nearby fellow players and zombies to a player
     players = @players.invoke 'getState'
     zombies = @zombies.invoke 'getState'
-    process.nextTick ->
-      player.socket.emit Message::UPDATE, { players, zombies }
 
+    player.socket.emit Message::UPDATE, { players, zombies }
   updateAllPlayers: ->
     @io.sockets.emit Message::PLAYERS, @players.invoke('getState')
 
