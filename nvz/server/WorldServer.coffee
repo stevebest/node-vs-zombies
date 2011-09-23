@@ -7,6 +7,7 @@ SocketInput = require './SocketInput'
 Message = require '../shared/Message'
 
 Hashtable = require '../shared/Hashtable'
+G = require '../shared/Geometry'
 
 # The framerate at which the server updates the world
 SERVER_FRAMERATE = 60
@@ -130,13 +131,10 @@ module.exports = class WorldServer extends World
    and no farther than {max} meters away.
   ###
   spawnZombie: (location, min, max) ->
-    randomAngle = -> 2 * Math.PI * Math.random()
-    randomPosition = -> (2 * Math.random() - 1) * World::SIZE
-
     zombie = new Zombie this, Math.floor(Math.random() * 0x7fffffff)
 
-    zombie.x = randomPosition()
-    zombie.y = randomPosition()
-    zombie.heading = randomAngle()
+    zombie.x = G.randomPosition World::SIZE
+    zombie.y = G.randomPosition World::SIZE
+    zombie.heading = G.randomAngle()
 
     @addZombie zombie
