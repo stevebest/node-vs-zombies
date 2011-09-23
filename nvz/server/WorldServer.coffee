@@ -111,10 +111,10 @@ module.exports = class WorldServer extends World
   removePlayer: (name) ->
     super name
     if @players.isEmpty()
-      @zombies = new Hashtable
       @addInitialZombies()
 
   addInitialZombies: ->
+    @zombies = new Hashtable
     @spawnZombies WorldServer::ZOMBIES_AT_START
 
   spawnZombies: (n) ->
