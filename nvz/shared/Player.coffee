@@ -21,12 +21,8 @@ module.exports = class Player extends Actor
     @turn  dt if @input.left()
     @turn -dt if @input.right()
 
-    if @input.up()
-      @walk dt
-    else if @input.down()
-      @walk -dt / 2.0
-    else
-      @idle()
+    @walk(if @input.up()   then  dt       else
+          if @input.down() then -dt / 2.0 else 0)
 
     @x = clamp @x, -World::SIZE, World::SIZE
     @y = clamp @y, -World::SIZE, World::SIZE
