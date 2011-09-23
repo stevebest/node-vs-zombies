@@ -68,9 +68,6 @@ module.exports = class WorldServer extends World
     if @getPlayer nick
       return true
     else
-      # let's have some fun
-      # @spawnZombies WorldServer::ZOMBIES_PER_NEW_PLAYER, World::ORIGIN, World::SIZE, World::SIZE
-
       player = @createPlayer nick, socket
       @placePlayer player
       @addPlayer nick, player
