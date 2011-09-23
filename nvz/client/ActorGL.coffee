@@ -30,7 +30,6 @@ module.exports = class ActorGL
     @actor.setPosition position
 
   remove: ->
-    @actor.remove()
     @scene.remove @object
 
   update: (dt) ->
