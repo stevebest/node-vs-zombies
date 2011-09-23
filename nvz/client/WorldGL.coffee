@@ -104,6 +104,7 @@ module.exports = class WorldGL extends World
         zombie = new ZombieGL this, id
         @addZombie zombie
       zombie.setState state
+      zombie.update 0
 
 
   # Asset loading

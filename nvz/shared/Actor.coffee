@@ -37,7 +37,7 @@ module.exports = class Actor
 
   setState: (state) ->
     { @x, @y, @heading, @health, @speed } = state
-    @update 0
+    this
 
   getLocation: ->
     { @x, @y }
