@@ -53,22 +53,10 @@ module.exports = class WorldGL extends World
       { players, zombies } = message
       @updateZombies zombies
 
-    socket.on Message::PLAYERS, (players) =>
-      (new Hashtable players).forEach (name, state) =>
-        player = @getPlayer name
-        if undefined == player
-          player = new PlayerGL this
-          player.setInput new SocketInput name
-          @addPlayer name, player
-        player.setState state
-
-      return null # do not collect the comprehension result
-
     socket.on Message::LEAVE, (name) =>
       @removePlayer name
 
     # Update SocketInput, too
-    socket.on Message::PLAYERS, SocketInput.update
     socket.on Message::KEYDOWN, SocketInput.keyDown
     socket.on Message::KEYUP, SocketInput.keyUp
 

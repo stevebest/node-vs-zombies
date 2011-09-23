@@ -9,9 +9,6 @@ module.exports = class Message
   # List of players, list of zombies
   UPDATE:  'update'
 
-  # List of players
-  PLAYERS: 'nicknames'
-
   # A new player joins the game
   JOIN:    'nickname'
 
