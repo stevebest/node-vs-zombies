@@ -1,4 +1,8 @@
 Actor = require './Actor'
+World = require '../shared/World'
+
+clamp = (value, min, max) ->
+  `value < min ? min : value > max ? max : value`
 
 module.exports = class Player extends Actor
 
@@ -23,6 +27,9 @@ module.exports = class Player extends Actor
       @walk -dt / 2.0
     else
       @idle()
+
+    @x = clamp @x, -World::SIZE, World::SIZE
+    @y = clamp @y, -World::SIZE, World::SIZE
 
     this
 

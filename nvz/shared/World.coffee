@@ -1,9 +1,6 @@
 Actor = require './Actor'
 Hashtable = require './Hashtable'
 
-clamp = (value, min, max) ->
-  `value < min ? min : value > max ? max : value`
-
 module.exports = class World
 
   # The origin of the world
@@ -42,8 +39,6 @@ module.exports = class World
 
     @players.forEach (name, player) ->
       player.update dt
-      player.x = clamp player.x, -World::SIZE, World::SIZE
-      player.y = clamp player.y, -World::SIZE, World::SIZE
 
     @zombies.forEach (id, zombie) ->
       zombie.update dt
