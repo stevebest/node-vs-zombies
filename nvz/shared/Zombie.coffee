@@ -17,6 +17,16 @@ module.exports = class Zombie extends Actor
     # MUST EAT HIM BRAAAINS!
     @player = null
 
+  getState: ->
+    state = super()
+    state.targetHeading = @targetHeading
+    state
+
+  setState: (state) ->
+    super state
+    @targetHeading = state.targetHeading
+    this
+
   update: (dt) ->
     super dt
 

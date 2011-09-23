@@ -13,6 +13,8 @@ module.exports = class World
     @players = new Hashtable
     @zombies = new Hashtable
 
+  getSize: -> World::SIZE
+
   addPlayer: (name, player) ->
     @players.put name, player
 
