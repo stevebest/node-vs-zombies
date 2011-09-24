@@ -55,6 +55,9 @@ module.exports = class WorldServer extends World
     socket.on Message::JOIN, (nick, callback) =>
       callback @joinPlayer(nick, socket)
 
+    socket.on Message::UPDATE, =>
+      @updatePlayer socket.player
+
     socket.on 'disconnect', =>
       @removePlayer socket.nickname
       socket.broadcast.emit Message::LEAVE, socket.nickname

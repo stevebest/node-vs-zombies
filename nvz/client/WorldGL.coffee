@@ -20,6 +20,8 @@ module.exports = class WorldGL extends World
   NEAR = 0.1
   FAR = 100
 
+  SYNC_INTERVAL = 3000
+
   constructor: (container, socket, heroName) ->
     super()
 
@@ -54,6 +56,9 @@ module.exports = class WorldGL extends World
       { players, zombies } = message
       @updatePlayers players
       @updateZombies zombies
+
+    # Request updates from server periodically
+    setInterval (-> socket.emit Message::UPDATE), SYNC_INTERVAL
 
     socket.on Message::JOIN, (player) =>
       console.log "JOIN", player
