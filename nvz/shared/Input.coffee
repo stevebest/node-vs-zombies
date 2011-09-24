@@ -6,12 +6,12 @@ module.exports = class Input
   UP:    38
   RIGHT: 39
   DOWN:  40
+  FIRE:  17
 
-  ALL: [Input::LEFT, Input::UP, Input::RIGHT, Input::DOWN]
+  ALL: [Input::LEFT, Input::UP, Input::RIGHT, Input::DOWN, Input::FIRE]
 
   left:  -> false
   right: -> false
   up:    -> false
   down:  -> false
-
   fire:  -> false

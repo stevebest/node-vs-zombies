@@ -27,3 +27,4 @@ module.exports = class SocketInput extends Input
   up:    -> keyState.get(@player).get Input::UP
   right: -> keyState.get(@player).get Input::RIGHT
   down:  -> keyState.get(@player).get Input::DOWN
+  fire:  -> keyState.get(@player).get Input::FIRE
