@@ -25,11 +25,16 @@ module.exports = class Zombie extends Actor
   getState: ->
     state = super()
     state.targetHeading = @targetHeading
+    state.targetName = @player.name if @player
     state
 
   setState: (state) ->
     super state
     @targetHeading = state.targetHeading
+
+    player = @world.getPlayer state.targetName
+    @player = player if !!player
+
     this
 
   update: (dt) ->
