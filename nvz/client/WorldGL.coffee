@@ -73,6 +73,7 @@ module.exports = class WorldGL extends World
     socket.on Message::KEYUP, SocketInput.keyUp
 
     @muzzleFlash = new THREE.PointLight 0xffffff, 0.0, 15.0
+    @muzzleFlash.position.z = 10000.0
     @scene.addLight @muzzleFlash
 
   initPlayer: (name) ->
