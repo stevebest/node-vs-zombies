@@ -4,12 +4,26 @@ module.exports = class ActorGL
   GEOMETRY = new THREE.CubeGeometry(0.4, 0.8, 1.7 * 2, 1, 1, 1)
   MATERIAL = new THREE.MeshLambertMaterial
 
+  # Animation duration
+  duration = 1500
+  keyframes = 6
+  interpolation = duration / keyframes
+
   constructor: (@world, @actor) ->
     @scene = @world.scene
 
-    @object = new THREE.Mesh GEOMETRY, MATERIAL
+    material = new THREE.MeshLambertMaterial(
+      color: 0xaaaaaa
+      morphTargets: true
+      map: MATERIAL.map
+    )
+
+    @object = new THREE.Mesh GEOMETRY, material
     @object.position.z = 0
     @scene.addChild @object
+
+    @lastKeyframe = 0
+    @currentKeyframe = 0
 
   getState: ->
     @actor.getState()
@@ -41,10 +55,28 @@ module.exports = class ActorGL
 
     @object.rotation.z = @actor.heading + (Math.PI / 2)
 
+    # Alternate morph targets to animate the dude
+    time = Date.now() % duration
+
+    keyframe = Math.floor(time / interpolation)
+
+    if keyframe != @currentKeyframe
+      @object.morphTargetInfluences[@lastKeyframe] = 0
+      @object.morphTargetInfluences[@currentKeyframe] = 1
+      @object.morphTargetInfluences[keyframe] = 0
+
+      @lastKeyframe = @currentKeyframe
+      @currentKeyframe = keyframe
+
+    @object.morphTargetInfluences[keyframe] = (time % interpolation) / interpolation
+    @object.morphTargetInfluences[@lastKeyframe] = 1 - @object.morphTargetInfluences[keyframe]
+
     this
 
   # Assets
   loader = new THREE.JSONLoader false
-  loader.load model: '/images/Dude.js', callback: (geometry) ->
+  loader.load model: '/images/Dude-walk.js', callback: (geometry) ->
     GEOMETRY = geometry
-    MATERIAL = geometry.materials[0]
+    #MATERIAL = new THREE.MeshLambertMaterial({color: 0x606060, morphTargets: true})
+    #geometry.materials[0][0].morphTargets = true
+    MATERIAL = geometry.materials[0][0]
