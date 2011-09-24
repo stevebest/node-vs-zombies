@@ -12,7 +12,11 @@ module.exports = class ActorGL
   constructor: (@world, @actor) ->
     @scene = @world.scene
 
-    material = new THREE.MeshLambertMaterial({color: 0x606060, morphTargets: true})
+    material = new THREE.MeshLambertMaterial(
+      color: 0xaaaaaa
+      morphTargets: true
+      map: MATERIAL.map
+    )
 
     @object = new THREE.Mesh GEOMETRY, material
     @object.position.z = 0
@@ -73,6 +77,6 @@ module.exports = class ActorGL
   loader = new THREE.JSONLoader false
   loader.load model: '/images/Dude-walk.js', callback: (geometry) ->
     GEOMETRY = geometry
-    MATERIAL = new THREE.MeshLambertMaterial({color: 0x606060, morphTargets: true})
+    #MATERIAL = new THREE.MeshLambertMaterial({color: 0x606060, morphTargets: true})
     #geometry.materials[0][0].morphTargets = true
-    #MATERIAL = geometry.materials[0][0]
+    MATERIAL = geometry.materials[0][0]
