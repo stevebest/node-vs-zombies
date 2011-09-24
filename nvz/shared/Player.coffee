@@ -14,6 +14,11 @@ module.exports = class Player extends Actor
 
     @health = 5
 
+  getState: ->
+    state = super()
+    state.name = @name
+    state
+
   setInput: (@input) ->
     this
   

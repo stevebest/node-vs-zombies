@@ -55,6 +55,10 @@ module.exports = class WorldGL extends World
       @updatePlayers players
       @updateZombies zombies
 
+    socket.on Message::JOIN, (player) =>
+      console.log "JOIN", player
+      @updatePlayer player
+
     socket.on Message::LEAVE, (name) =>
       console.log "LEAVE", name
       @removePlayer name
@@ -97,6 +101,15 @@ module.exports = class WorldGL extends World
         @addPlayer name, player
       player.setState state
       player.update 0
+
+  updatePlayer: (state) ->
+    player = @getPlayer state.name
+    if !player
+      player = new PlayerGL this
+      player.setInput new SocketInput name
+      @addPlayer name, player
+    player.setState state
+    player.update 0
 
   updateZombies: (zombies) ->
     (new Hashtable zombies).forEach (id, state) =>

@@ -74,7 +74,9 @@ module.exports = class WorldServer extends World
       @placePlayer player
       @addPlayer nick, player
 
-      process.nextTick => @updatePlayer player
+      process.nextTick =>
+        @updatePlayer player
+        @broadcastJoin player
 
       return false
 
@@ -82,6 +84,7 @@ module.exports = class WorldServer extends World
     player = new Player this
     player.setInput new SocketInput(socket)
     socket.nickname = nick
+    player.name = nick
     socket.player = player
     player.socket = socket
     return player
@@ -102,6 +105,9 @@ module.exports = class WorldServer extends World
     players = @players.invoke 'getState'
     zombies = @zombies.invoke 'getState'
     player.socket.emit Message::UPDATE, { players, zombies }
+
+  broadcastJoin: (player) ->
+    @io.sockets.emit Message::JOIN, player.getState()
 
   removePlayer: (name) ->
     super name
