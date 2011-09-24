@@ -70,7 +70,7 @@ module.exports = class WorldServer extends World
   ###
   joinPlayer: (nick, socket) ->
     console.log "Player #{nick} tries to join the party"
-    if @getPlayer nick
+    if !nick or @getPlayer nick
       return true
     else
       player = @createPlayer nick, socket
