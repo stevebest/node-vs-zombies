@@ -106,8 +106,8 @@ module.exports = class WorldGL extends World
     player = @getPlayer state.name
     if !player
       player = new PlayerGL this
-      player.setInput new SocketInput name
-      @addPlayer name, player
+      player.setInput new SocketInput state.name
+      @addPlayer state.name, player
     player.setState state
     player.update 0
 
