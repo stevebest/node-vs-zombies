@@ -8,15 +8,12 @@ module.exports = class SocketInput extends Input
   keyState = new Hashtable
 
   @keyDown: (player, keyCode) ->
+    return null if !keyState.get player
     keyState.get(player).put keyCode, true
 
   @keyUp: (player, keyCode) ->
+    return null if !keyState.get player
     keyState.get(player).put keyCode, false
-
-  @update: (players) ->
-    (new Hashtable players).forEach (player, state) ->
-      if !keyState.get player
-        keyState.put player, new Hashtable
 
   constructor: (@player) ->
     keyState.put @player, new Hashtable
