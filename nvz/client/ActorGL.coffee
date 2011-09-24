@@ -9,8 +9,8 @@ module.exports = class ActorGL
   }
 
   # Animation duration
-  duration = 1000
-  keyframes = 8
+  duration = 1500
+  keyframes = 7
   interpolation = duration / keyframes
 
   constructor: (@world, @actor) ->
@@ -60,9 +60,7 @@ module.exports = class ActorGL
     @object.rotation.z = @actor.heading + (Math.PI / 2)
 
     # Alternate morph targets to animate the dude
-    time = Date.now() % duration
-
-    keyframe = Math.floor(time / interpolation)
+    { keyframe, tween } = @getKeyframe()
 
     if keyframe != @currentKeyframe
       @object.morphTargetInfluences[@lastKeyframe] = 0
@@ -72,10 +70,17 @@ module.exports = class ActorGL
       @lastKeyframe = @currentKeyframe
       @currentKeyframe = keyframe
 
-    @object.morphTargetInfluences[keyframe] = (time % interpolation) / interpolation
-    @object.morphTargetInfluences[@lastKeyframe] = 1 - @object.morphTargetInfluences[keyframe]
+    @object.morphTargetInfluences[keyframe]      = tween
+    @object.morphTargetInfluences[@lastKeyframe] = 1 - tween
 
     this
+
+  getKeyframe: ->
+    time = Date.now() % duration
+    return {
+      keyframe: Math.floor(time / interpolation)
+      tween: (time % interpolation) / interpolation
+    }
 
   # Assets
   loader = new THREE.JSONLoader false
