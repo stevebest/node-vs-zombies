@@ -1,12 +1,16 @@
 
 module.exports = class ActorGL
 
-  GEOMETRY = new THREE.CubeGeometry(0.4, 0.8, 1.7 * 2, 1, 1, 1)
   MATERIAL = new THREE.MeshLambertMaterial
+
+  GEOMETRY: {
+    player: new THREE.CubeGeometry(1, 1, 1)
+    zombie: new THREE.CubeGeometry(1, 1, 1)
+  }
 
   # Animation duration
   duration = 1500
-  keyframes = 6
+  keyframes = 7
   interpolation = duration / keyframes
 
   constructor: (@world, @actor) ->
@@ -18,7 +22,7 @@ module.exports = class ActorGL
       map: MATERIAL.map
     )
 
-    @object = new THREE.Mesh GEOMETRY, material
+    @object = new THREE.Mesh @getGeometry(), material
     @object.position.z = 0
     @scene.addChild @object
 
@@ -56,9 +60,7 @@ module.exports = class ActorGL
     @object.rotation.z = @actor.heading + (Math.PI / 2)
 
     # Alternate morph targets to animate the dude
-    time = Date.now() % duration
-
-    keyframe = Math.floor(time / interpolation)
+    { keyframe, tween } = @getKeyframe()
 
     if keyframe != @currentKeyframe
       @object.morphTargetInfluences[@lastKeyframe] = 0
@@ -68,15 +70,24 @@ module.exports = class ActorGL
       @lastKeyframe = @currentKeyframe
       @currentKeyframe = keyframe
 
-    @object.morphTargetInfluences[keyframe] = (time % interpolation) / interpolation
-    @object.morphTargetInfluences[@lastKeyframe] = 1 - @object.morphTargetInfluences[keyframe]
+    @object.morphTargetInfluences[keyframe]      = tween
+    @object.morphTargetInfluences[@lastKeyframe] = 1 - tween
 
     this
 
+  getKeyframe: ->
+    time = Date.now() % duration
+    return {
+      keyframe: Math.floor(time / interpolation)
+      tween: (time % interpolation) / interpolation
+    }
+
   # Assets
   loader = new THREE.JSONLoader false
-  loader.load model: '/images/Dude-walk.js', callback: (geometry) ->
-    GEOMETRY = geometry
-    #MATERIAL = new THREE.MeshLambertMaterial({color: 0x606060, morphTargets: true})
-    #geometry.materials[0][0].morphTargets = true
+
+  loader.load model: '/images/Dude-with-gun.js', callback: (geometry) ->
+    ActorGL::GEOMETRY.player = geometry
     MATERIAL = geometry.materials[0][0]
+
+  loader.load model: '/images/Dude-walk.js', callback: (geometry) ->
+    ActorGL::GEOMETRY.zombie = geometry
