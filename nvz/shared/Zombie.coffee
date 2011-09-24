@@ -17,7 +17,7 @@ module.exports = class Zombie extends Actor
   constructor: (world, @id) ->
     super world
 
-    @speed = (1.0 + Math.random())/ 1000
+    @speed = (1.0 + 0.4 * Math.random()) / 1000
 
     # MUST EAT HIM BRAAAINS!
     @player = null
