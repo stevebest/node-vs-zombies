@@ -11,9 +11,6 @@ class PlayerGL extends ActorGL
   constructor: (world) ->
     super world, new Player(world)
 
-    @muzzleFlash = new THREE.PointLight 0xffffff, 0.0, 15.0
-    @scene.addLight @muzzleFlash
-
   getGeometry: -> ActorGL::GEOMETRY.player
 
   setInput: (input) ->
@@ -37,14 +34,10 @@ class PlayerGL extends ActorGL
     super dt
 
     if @actor.isFiring
-      @muzzleFlash.intensity = 2.0 / (@actor.fireTime - Date.now() + 1)
-    else
-      @muzzleFlash.position.x = @actor.x
-      @muzzleFlash.position.y = @actor.y
-      @muzzleFlash.position.z = 5.0
-      @muzzleFlash.intensity /= 2.0
-      #if @muzzleFlash.intensity < 0.001
-      #  @scene.removeLight @muzzleFlash
+      @world.muzzleFlash.position.x = @actor.x + 0.6 * Math.cos(@actor.heading)
+      @world.muzzleFlash.position.y = @actor.y + 0.6 * Math.sin(@actor.heading)
+      @world.muzzleFlash.position.z = 1.6
+      @world.muzzleFlash.intensity = 2.0 / (@actor.fireTime - Date.now() + 1)
 
     this
 
