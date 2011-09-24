@@ -1,12 +1,16 @@
 
 module.exports = class ActorGL
 
-  GEOMETRY = new THREE.CubeGeometry(0.4, 0.8, 1.7 * 2, 1, 1, 1)
   MATERIAL = new THREE.MeshLambertMaterial
 
+  GEOMETRY: {
+    player: new THREE.CubeGeometry(1, 1, 1)
+    zombie: new THREE.CubeGeometry(1, 1, 1)
+  }
+
   # Animation duration
-  duration = 1500
-  keyframes = 6
+  duration = 1000
+  keyframes = 8
   interpolation = duration / keyframes
 
   constructor: (@world, @actor) ->
@@ -18,7 +22,7 @@ module.exports = class ActorGL
       map: MATERIAL.map
     )
 
-    @object = new THREE.Mesh GEOMETRY, material
+    @object = new THREE.Mesh @getGeometry(), material
     @object.position.z = 0
     @scene.addChild @object
 
@@ -75,8 +79,10 @@ module.exports = class ActorGL
 
   # Assets
   loader = new THREE.JSONLoader false
-  loader.load model: '/images/Dude-walk.js', callback: (geometry) ->
-    GEOMETRY = geometry
-    #MATERIAL = new THREE.MeshLambertMaterial({color: 0x606060, morphTargets: true})
-    #geometry.materials[0][0].morphTargets = true
+
+  loader.load model: '/images/Dude-with-gun.js', callback: (geometry) ->
+    ActorGL::GEOMETRY.player = geometry
     MATERIAL = geometry.materials[0][0]
+
+  loader.load model: '/images/Dude-walk.js', callback: (geometry) ->
+    ActorGL::GEOMETRY.zombie = geometry

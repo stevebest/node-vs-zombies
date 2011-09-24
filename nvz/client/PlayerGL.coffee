@@ -7,6 +7,8 @@ class PlayerGL extends ActorGL
   constructor: (world) ->
     super world, new Player(world)
 
+  getGeometry: -> ActorGL::GEOMETRY.player
+
   setInput: (input) ->
     @actor.setInput input
 
