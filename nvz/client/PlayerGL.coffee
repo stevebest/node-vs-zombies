@@ -30,6 +30,18 @@ class PlayerGL extends ActorGL
 
   isRunning: -> @actor.input.up()
 
+  update: (dt) ->
+    super dt
+
+    if @actor.isFiring
+      @world.muzzleFlash.position.x = @actor.x + 0.6 * Math.cos(@actor.heading)
+      @world.muzzleFlash.position.y = @actor.y + 0.6 * Math.sin(@actor.heading)
+      @world.muzzleFlash.position.z = 1.6
+      @world.muzzleFlash.intensity = 2.0 / (@actor.fireTime - Date.now() + 1)
+
+    this
+
+
 class HeroPlayerGL extends PlayerGL
 
   constructor: (world) ->
