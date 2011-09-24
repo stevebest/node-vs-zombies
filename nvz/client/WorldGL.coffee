@@ -94,13 +94,7 @@ module.exports = class WorldGL extends World
 
   updatePlayers: (players) ->
     (new Hashtable players).forEach (name, state) =>
-      player = @getPlayer name
-      if !player
-        player = new PlayerGL this
-        player.setInput new SocketInput name
-        @addPlayer name, player
-      player.setState state
-      player.update 0
+      @updatePlayer state
 
   updatePlayer: (state) ->
     player = @getPlayer state.name
