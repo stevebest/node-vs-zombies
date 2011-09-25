@@ -24,7 +24,7 @@ requestAnimationFrame = (callback) ->
 module.exports = class WorldServer extends World
 
   # Number of zombies permanently present in the world
-  ZOMBIES_AT_START: 100
+  ZOMBIES_AT_START: 25
 
   # Additional number of zombies arrearing when new player joins the game
   ZOMBIES_PER_NEW_PLAYER: 10

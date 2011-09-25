@@ -7,7 +7,7 @@ module.exports = class World
   ORIGIN: { x: 0, y: 0 }
 
   # World is square, spanning from -SIZE to SIZE on both axis
-  SIZE: 64.0;
+  SIZE: 32.0;
 
   constructor: ->
     @players = new Hashtable
